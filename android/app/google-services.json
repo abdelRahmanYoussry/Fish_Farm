@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "960267022091",
+    "project_id": "fish-farm-577ac",
+    "storage_bucket": "fish-farm-577ac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960267022091:android:ae7c29f0c446eb74a5bc0e",
+        "android_client_info": {
+          "package_name": "com.example.fish_farm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "960267022091-3101pb2gbhmv7lpugcfarclmasug2pi6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fish_farm",
+            "certificate_hash": "16fe88ccace2bbe00b782acf99ca8b25502b43e4"
+          }
+        },
+        {
+          "client_id": "960267022091-pc38acqrkm2jou6ic7ota56rdvgg4r0d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6dmg59w_yV5AIZtcqnmE24bF6H-_EFbQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "960267022091-pc38acqrkm2jou6ic7ota56rdvgg4r0d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
