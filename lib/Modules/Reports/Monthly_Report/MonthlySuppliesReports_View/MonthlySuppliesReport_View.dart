@@ -26,7 +26,7 @@ class MonthlySuppliesReportView extends StatelessWidget {
               key: formKey,
               child: Column(
                 children: [
-                  dropDownReports(
+                  myDropDownMenu(
                     label:'Please Select Tank',
                     className: ClassOfAllTanksName,
                     listName: listOfAllTankName,
@@ -56,7 +56,7 @@ class MonthlySuppliesReportView extends StatelessWidget {
                     }).toList(),),
                   SizedBox(
                     height: 30,),
-                  dropDownReports(
+                  myDropDownMenu(
                     label: 'Oxygen , Generator , Water ',
                     className: SuppliesClass,
                     listName: suppliesList,

@@ -186,6 +186,8 @@ class HomeScreen extends StatelessWidget {
                                       title: 'Reports',
                                       onTap: (){
                                         navigateTo(context, widget: ReportScreen());
+                                        FishFarmCubit.get(context).getAllTankData();
+                                        FishFarmCubit.get(context).getAllFeedTypesData();
                                       }),
                                   SizedBox(
                                       width: 70

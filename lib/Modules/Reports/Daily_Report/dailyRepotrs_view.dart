@@ -15,7 +15,8 @@ import '../../../Shared/Componets/constans.dart';
 class DailyReportView extends StatelessWidget {
   var dailyController=TextEditingController();
   var formKey=GlobalKey<FormState>();
-  String ?selectedTankName;
+  String ?tankName;
+  String ?selectedMonth;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FishFarmCubit,FishFarmStates>(
@@ -37,39 +38,63 @@ class DailyReportView extends StatelessWidget {
                 key: formKey,
                 child: Column(
                   children: [
-                    dropDownReports(
-                      label:'Tank Num',
-                      className: ClassOfAllTanksName,
-                      listName: listOfAllTankName,
-                      objectOFClass: objectOfAllTanksName,
-                      onChange: cubit.functionChangeTankNumMonthlyReport,
-                      validator:(value) {
-                        if (value == null)
+                    myDropDownMenu(
+                        label: 'Select Tank',
+                        listName: FishFarmCubit.get(context).tanksIdList,
+                        // objectOFClass: objectOfAllTanksName,
+                        items: FishFarmCubit.get(context).tanksIdList.map(( tank )
                         {
-                          return 'Tank Num Cant be Empty';
-                        }
-                        else {
-                          selectedTankName=value.tankName.toString();
-                          print(value.tankName.toString());
-
-                        }
-                      },
-                      items: listOfAllTankName.map((ClassOfAllTanksName tankListNumMonthlyReport )
-                      {
-                        return DropdownMenuItem<ClassOfAllTanksName>(
-                            value: tankListNumMonthlyReport,
-                            child: Row(
-                              children: [
-                                Text(tankListNumMonthlyReport.tankName,
-                                ),
-                                SizedBox(
-                                  width:60,
-                                ),
-
-                              ],
-                            )
-                        );
-                      }).toList(),),
+                          return DropdownMenuItem(
+                              value: tank,
+                              child: Row(
+                                children: [
+                                  Text(tank,
+                                  ),
+                                ],
+                              )
+                          );
+                        }).toList(),
+                        validator: (value){
+                          if (value==null) {
+                            return 'Tank Name Cant be Empty';
+                          }
+                          // print(value);
+                          else tankName=value;
+                        },
+                        onChange: (value){}),
+                    // myDropDownMenu(
+                    //   label:'Tank Num',
+                    //   className: ClassOfAllTanksName,
+                    //   listName: listOfAllTankName,
+                    //   objectOFClass: objectOfAllTanksName,
+                    //   onChange: cubit.functionChangeTankNumMonthlyReport,
+                    //   validator:(value) {
+                    //     if (value == null)
+                    //     {
+                    //       return 'Tank Num Cant be Empty';
+                    //     }
+                    //     else {
+                    //       selectedTankName=value.tankName.toString();
+                    //       print(value.tankName.toString());
+                    //
+                    //     }
+                    //   },
+                    //   items: listOfAllTankName.map((ClassOfAllTanksName tankListNumMonthlyReport )
+                    //   {
+                    //     return DropdownMenuItem<ClassOfAllTanksName>(
+                    //         value: tankListNumMonthlyReport,
+                    //         child: Row(
+                    //           children: [
+                    //             Text(tankListNumMonthlyReport.tankName,
+                    //             ),
+                    //             SizedBox(
+                    //               width:60,
+                    //             ),
+                    //
+                    //           ],
+                    //         )
+                    //     );
+                    //   }).toList(),),
                     SizedBox(
                       height: 30,),
                     defaultFormText(
@@ -92,6 +117,7 @@ class DailyReportView extends StatelessWidget {
                              firstDate: DateTime(2019),
                              lastDate: DateTime(2024) ).then((value) {
                                dailyController.text=DateFormat.yMMMMd().format(value!);
+                               selectedMonth=DateFormat.yMMMM().format(value);
                          });
                       },
                       onSubmit: (value){
@@ -104,10 +130,13 @@ class DailyReportView extends StatelessWidget {
                     ),
                     defaultButton(
                         buttonName: 'Submit',
-                        onTap: (){
+                        onTap: ()async {
                           if(formKey.currentState!.validate())
                           {
-                            print(dailyController.text+' $selectedTankName');
+                            await FishFarmCubit.get(context).getTotalSelectedTankData(tankName: tankName!);
+                            print(dailyController.text+' $tankName '+ selectedMonth!);
+
+
                              cubit.isEnable=true;
                              showModalBottomSheet(
                                elevation: 0.0,
@@ -121,12 +150,12 @@ class DailyReportView extends StatelessWidget {
                     SizedBox(
                       height:30 ,
                     ),
-                    if(cubit.userModel!.isAdmin==true)
-                    defaultButton(
-                        buttonName: 'Add',
-                        onTap: (){
-
-                        }),
+                    // if(cubit.userModel!.isAdmin==true)
+                    // defaultButton(
+                    //     buttonName: 'Add',
+                    //     onTap: (){
+                    //
+                    //     }),
                     // SizedBox(
                     //   height:30 ,
                     // ),
@@ -243,7 +272,7 @@ Widget bottomSheetBuilder()=>Padding(
         children: [
           Padding(
             padding: const EdgeInsets.all(5.0),
-            child: Text('$selectedTankName',style: TextStyle(
+            child: Text('$tankName',style: TextStyle(
               color: Colors.white,fontSize: 26
             ),),
           ),

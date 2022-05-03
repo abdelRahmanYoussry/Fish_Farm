@@ -4,7 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart'as firebase_storage;
-import 'package:fish_farm/Models/MortalityModel.dart';
+import 'package:fish_farm/Models/DailyModel.dart';
+import 'package:fish_farm/Models/MortalityTankModel.dart';
 import 'package:fish_farm/Models/ProfileModel.dart';
 import 'package:fish_farm/Modules/Login&Register/login/fishFarm_login.dart';
 import 'package:fish_farm/Modules/Reports/Monthly_Report/Monthly_Reports_Layout.dart';
@@ -13,6 +14,10 @@ import 'package:fish_farm/Modules/Reports/Stock_Report/StockReports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../Models/CreateFeedModel.dart';
+import '../../Models/MonthlyModel.dart';
+import '../../Models/MortalityModel.dart';
+import '../../Models/TanksFeedModel.dart';
 import '../../Models/TankModel.dart';
 import '../Componets/components.dart';
 import '../Componets/constans.dart';
@@ -39,7 +44,7 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
 
   FishFarmUserModel?userModel;
   TankModel?tankModel;
-  MortalityModel? mortalityModel;
+  MortalityTanksModel? mortalityModel;
 
   void getUserData() {
     emit(GetUserDataLoadingState());
@@ -147,30 +152,30 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     });
   }
 
-  Widget dropDownReports<listName>({
-    required Text hint,
-    required className,
-    required listName,
-    required objectOFClass,
-    required items,
-  }) {
-    return DropdownButtonFormField(
-        decoration: InputDecoration(
-            border: OutlineInputBorder()
-        ),
-        iconSize: 30,
-        iconEnabledColor: Colors.blue,
-        hint: hint,
-        isExpanded: true,
-        icon: Icon(Icons.anchor),
-        value: objectOFClass,
-        //TheObjectOfTheClass
-        onChanged: (value) {
-          objectOFClass = value; //TheObjectOfTheClass=value
-          //emitTheState
-        },
-        items: items);
-  }
+  // Widget dropDownReports<listName>({
+  //   required Text hint,
+  //   required className,
+  //   required listName,
+  //   required objectOFClass,
+  //   required items,
+  // }) {
+  //   return DropdownButtonFormField(
+  //       decoration: InputDecoration(
+  //           border: OutlineInputBorder()
+  //       ),
+  //       iconSize: 30,
+  //       iconEnabledColor: Colors.blue,
+  //       hint: hint,
+  //       isExpanded: true,
+  //       icon: Icon(Icons.anchor),
+  //       value: objectOFClass,
+  //       //TheObjectOfTheClass
+  //       onChanged: (value) {
+  //         objectOFClass = value; //TheObjectOfTheClass=value
+  //         //emitTheState
+  //       },
+  //       items: items);
+  // }
 
   void functionChangeTankNumMonthlyReport(value) {
     objectOfAllTanksName = value;
@@ -228,74 +233,114 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     });
   }
 
+  void createFeed({
+    required String feedName,
+    required double purchasedFeedWeight,
+    required double remainingFeedWeight,
+    required String purchasedDate,
+  }) {
+    CreateFeedModel createFeedModel = CreateFeedModel(
+      remainingFeed: remainingFeedWeight,
+      feedName: feedName,
+      purchasedDate: purchasedDate,
+     totalPurchasedFeed: purchasedFeedWeight
 
-  void addMortality({
+    );
+    emit(CreateFeedLoadingState());
+    FirebaseFirestore.instance
+        .collection('Feed')
+        .doc(feedName)
+        .set(createFeedModel.toMap())
+        .then((value) {
+
+      emit(CreateFeedSuccessState());
+    })
+        .catchError((error) {
+      emit(CreateFeedErrorState(error));
+    });
+  }
+
+  void addToTotalTanksMortality({
     required String tankName,
     required String datetime,
     String ?username,
     required String mortalityDatetime,
     required int mortalityCount,
-    int? totalMortality,
+    required int totalDailyMortality,
+    int? totalTankMortality,
     int? remaining,
   }) {
-    MortalityModel mortalityModel = MortalityModel(
+    MortalityTanksModel mortalityTankModel = MortalityTanksModel(
       remaining: remaining,
-      totalMortality: totalMortality,
+      totalMortality: totalTankMortality,
       dateTime: datetime,
       mortalityCount: mortalityCount,
       mortalityDate: mortalityDatetime,
       tankName: tankName,
       userName: userModel!.name,
     );
-    emit(AddMortalityLoadingState());
+    emit(AddTanksMortalityLoadingState());
     FirebaseFirestore.instance.collection('Tanks')
         .doc(tankName)
         .collection('Mortality')
         .doc(mortalityDatetime)
         .collection(userModel!.name!)
-        .add(mortalityModel.toMap())
+        .add(mortalityTankModel.toMap())
         .then((value) {
       FirebaseFirestore.instance.collection('Tanks')
           .doc(tankName)
-          .update({'totalMortality': totalMortality});
+          .update({'totalMortality': totalTankMortality});
       FirebaseFirestore.instance.collection('Tanks')
           .doc(tankName)
           .update({'remaining': remaining});
-      emit(AddMortalitySuccessState());
+      FirebaseFirestore.instance.collection('Tanks')
+          .doc(tankName)
+          .collection('Mortality')
+          .doc(mortalityDatetime)
+          .set({'TotalDayMortality':totalDailyMortality});
+      emit(AddTanksMortalitySuccessState());
     })
         .catchError((error) {
-      emit(AddMortalityErrorState(error));
+      emit(AddTanksMortalityErrorState(error));
     });
   }
 
   List<TankModel>tankModelList = [];
   int ?tankTotalMortality;
-  int ?tankTotalPscCount;
+  int ?tankTotalPscRemaining;
+  int ?tankTotalFeed;
+  int ?tankTotalPsc;
 
-  Future <void> getSelectedTankData({required String tankName}) async {
+  Future <void> getTotalSelectedTankData({required String tankName}) async
+  {
     emit(GetTanksDataLoadingState());
     await FirebaseFirestore.instance.collection('Tanks')
         .doc(tankName)
         .get()
         .then((value) {
       tankTotalMortality = 0;
+      tankTotalFeed = 0;
       tankModelList.clear();
       print(value.data());
       tankModelList.add(TankModel.fromJson(value.data()!));
+      tankTotalFeed=tankModelList[0].totalFeed ;
       tankTotalMortality = tankModelList[0].totalMortality;
-      tankTotalPscCount = tankModelList[0].remaining;
-      // print(tankModelList[0].totalMortality);
+      tankTotalPscRemaining = tankModelList[0].remaining;
+      tankTotalPsc=tankModelList[0].psc;
 
       emit(GetTanksDataSuccessState());
     })
         .catchError((error) {
       print(error.toString());
-      emit(GetTanksDataErrorState(error));
+      emit(GetTanksDataErrorState(error.toString()));
     });
   }
 
+
+
+
   List<TankModel>allTankModelList = [];
-  List<String>tanksId = [];
+  List<String>tanksIdList = [];
 
   void getAllTankData() {
     emit(GetTanksDataLoadingState());
@@ -303,15 +348,11 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
         .get()
         .then((value) {
           allTankModelList.clear();
-          tanksId.clear();
+          tanksIdList.clear();
       value.docs.forEach((element) {
         allTankModelList.add(TankModel.fromJson(element.data()));
-        tanksId.add(element.id);
+        tanksIdList.add(element.id);
       });
-      print(tanksId.length);
-      print(allTankModelList.length);
-      // print(allTankModelList);
-      //  print(allTankModelList[25].name);
       emit(GetTanksDataSuccessState());
     })
         .catchError((error) {
@@ -319,6 +360,194 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
       emit(GetTanksDataErrorState(error));
     });
   }
+
+  List<CreateFeedModel>allCreateFeedModelList = [];
+  List<String>feedIdList = [];
+  void getAllFeedTypesData() {
+    emit(GetFeedTypeDataLoadingState());
+    FirebaseFirestore.instance.collection('Feed')
+        .get()
+        .then((value) {
+      allCreateFeedModelList.clear();
+      feedIdList.clear();
+      value.docs.forEach((element) {
+        allCreateFeedModelList.add(CreateFeedModel.fromJson(element.data()));
+        feedIdList.add(element.id);
+      });
+      emit(GetFeedTypeDataSuccessState());
+    })
+        .catchError((error) {
+      print(error.toString());
+      emit(GetFeedTypeDataErrorState(error));
+    });
+  }
+
+
+  void addDailyFeed({
+    required String tankName,
+    required String datetime,
+    required String feedName,
+    required String feedDatetime,
+    required int feedWeight,
+    int? totalFeed,
+    int? remaining,
+  }) {
+    TanksFeedModel feedModel = TanksFeedModel(
+      feedWeight: feedWeight.toDouble(),
+      feedDate: feedDatetime,
+      feedSize: feedName,
+      totalRemainingFeed: remaining,
+      totalFeed: totalFeed,
+      dateTime: datetime,
+      tankName: tankName,
+      userName: userModel!.name,
+    );
+    emit(AddFeedLoadingState());
+    FirebaseFirestore.instance.collection('Tanks')
+        .doc(tankName)
+        .collection('Feed')
+        .doc(feedDatetime)
+        .collection(userModel!.name!)
+        .add(feedModel.toMap())
+        .then((value) {
+      FirebaseFirestore.instance.collection('Tanks')
+          .doc(tankName)
+          .update({'totalFeed': totalFeed});
+      emit(AddFeedSuccessState());
+    })
+        .catchError((error) {
+      emit(AddFeedErrorState(error));
+    });
+  }
+
+  void addToDailyReport({
+    required String tankName,
+    required String day,
+     int totalMortality=0,
+     int totalFeed=0,
+    required int pcsRemaining,
+  }){
+    DailyModel dailyModel=DailyModel(
+      totalMortality: totalMortality,
+      tankName: tankName,
+      totalFeed: totalFeed,
+      day: day,
+      pcsRemaining: pcsRemaining
+    );
+    emit(AddToDailyReportLoadingState());
+  FirebaseFirestore.instance
+  .collection('DailyReport')
+  .doc(day)
+  .collection(tankName)
+  .doc('Daily')
+  .set(dailyModel.toMap())
+  .then((value) {
+    emit(AddToDailyReportSuccessState());
+
+  }).catchError((error){
+    emit(AddToDailyReportErrorState(error));
+  });
+  }
+
+  int ?tankDailyMortality;
+  int ?tankDailyFeed;
+  Future <void> getDailySelectedTankData({
+    required String tankName,
+    required String selectedDay,
+  }) async {
+    emit(GetDailyTankLoadingState());
+    await FirebaseFirestore.instance.collection('Tanks')
+        .doc(tankName)
+        .collection('Mortality')
+        .doc(selectedDay)
+        .get()
+        .then((value) {
+      tankDailyMortality=0;
+      if(value.data()==null){
+        tankDailyMortality=0;
+      }
+      tankDailyMortality=value.data()!['TotalDayMortality'];
+      print(tankDailyMortality);
+      emit(GetDailyTankSuccessState());
+    })
+        .catchError((error) {
+      print(error.toString());
+      emit(GetDailyTankErrorState(error.toString()));
+    });
+  }
+
+int tankMonthlyMortality=0;
+  Future <void> getMonthlySelectedTankData({
+    required String tankName,
+    required String selectedMonth,
+  }) async {
+    emit(GetDailyTankLoadingState());
+    await FirebaseFirestore.instance
+        .collection('MonthlyReport')
+        .doc(selectedMonth)
+        .collection(tankName)
+        .doc('Monthly')
+        .get()
+        .then((value) {
+      tankMonthlyMortality=0;
+      if(value.data()==null){
+        tankMonthlyMortality=0;
+      }
+      tankMonthlyMortality=value.data()!['totalMortality'];
+      print(tankMonthlyMortality);
+      emit(GetDailyTankSuccessState());
+    })
+        .catchError((error) {
+      print(error.toString());
+      emit(GetDailyTankErrorState(error.toString()));
+    });
+  }
+
+// int monthlyMortality=0;
+  void addToMonthlyReport({
+    required String tankName,
+    required String month,
+    int totalMortality=0,
+    int totalFeed=0,
+    required int pcsRemaining,
+  }){
+    MonthlyModel monthlyModel=MonthlyModel(
+        totalMortality: totalMortality,
+        tankName: tankName,
+        totalFeed: totalFeed,
+        month: month,
+        pcsRemaining: pcsRemaining
+    );
+    emit(AddToMonthlyReportLoadingState());
+    FirebaseFirestore.instance
+        .collection('MonthlyReport')
+        .doc(month)
+        .collection(tankName)
+        .doc('Monthly')
+        .set(monthlyModel.toMap())
+        .then((value) {
+      //make this in uique method
+      // FirebaseFirestore.instance
+      //     .collection('MonthlyReport')
+      //     .doc(month)
+      //     .collection(tankName)
+      //     .doc('Monthly')
+      //     .get()
+      //     .then((value) {
+      //       monthlyMortality=0;
+      //       // print(value.data().toString());
+      //       monthlyMortality=value.data()!['totalMortality']??0;
+      //       print(monthlyMortality);
+      // })
+      //     .catchError((error){
+      //   emit(AddToMonthlyReportErrorState(error));
+      // });
+      emit(AddToMonthlyReportSuccessState());
+    }).catchError((error){
+      emit(AddToMonthlyReportErrorState(error));
+    });
+  }
+
 
 
 }

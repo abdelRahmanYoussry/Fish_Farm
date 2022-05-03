@@ -40,7 +40,7 @@ var formKey=GlobalKey<FormState>();
               key: formKey,
               child: Column(
                 children: [
-                  dropDownReports(
+                  myDropDownMenu(
                       label:'Tank Num',
                       className: ClassOfAllTanksName,
                       listName: listOfAllTankName,
@@ -66,10 +66,11 @@ var formKey=GlobalKey<FormState>();
                                ],
                                 )
                                     );
-                                      }).toList(),),
+                                      }).toList(),
+                  ),
                   SizedBox(
                     height: 30,),
-                    dropDownReports(
+                    myDropDownMenu(
                         label: 'Quantity , Weight , ِAverage , Mortality  Remaining , Feed',
                         className: TankProcessMonthlyItemClass,
                         listName: listProcessSelectedMonthlyReport,

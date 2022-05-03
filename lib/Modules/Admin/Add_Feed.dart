@@ -9,18 +9,17 @@ import '../../Shared/Componets/components.dart';
 import '../../Shared/Componets/constans.dart';
 import '../../Shared/Style/style.dart';
 
-class AddMortality_Screen extends StatelessWidget {
+class AddFeed_Screen extends StatelessWidget {
   var tankNameController = TextEditingController();
   String ?tankName;
-  String ?selectedMonth;
-  var mortalityPscController = TextEditingController();
+  String ?feedName;
+  var feedWeightController = TextEditingController();
   var dateController = TextEditingController();
   var formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FishFarmCubit, FishFarmStates>(
       listener: (context, state) {
-        // TODO: implement listener
       },
       builder: (context, state) {
 
@@ -28,7 +27,7 @@ class AddMortality_Screen extends StatelessWidget {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(40),
             child: defaultAppBar(context: context,
-                title: 'AddMortality', backGroundColor: defaultColor, elevation: 0.0
+                title: 'AddFeed', backGroundColor: defaultColor, elevation: 0.0
             ),
           ),
           backgroundColor: defaultColor,
@@ -41,26 +40,10 @@ class AddMortality_Screen extends StatelessWidget {
                 width: double.infinity,
                 child: Column(
                   children: [
-                   // DropdownButtonFormField(
-                   //     items:FishFarmCubit.get(context).tanksIdList.map((tank){
-                   //       return DropdownMenuItem(
-                   //            value: tank,
-                   //           child:
-                   //           Row(
-                   //             children: [
-                   //                         Text(tank,),
-                   //                         SizedBox(
-                   //                           width:60,
-                   //                         ),
-                   //                       ],
-                   //                     )
-                   //       );
-                   //     } ).toList(),
-                   //     onChanged: (value){}),
                     myDropDownMenu(
                         label: 'Select Tank',
                         listName: FishFarmCubit.get(context).tanksIdList,
-                        objectOFClass: objectOfAllTanksName,
+                       // objectOFClass: objectOfAllTanksName,
                         items: FishFarmCubit.get(context).tanksIdList.map(( tank )
                         {
                           return DropdownMenuItem(
@@ -74,44 +57,54 @@ class AddMortality_Screen extends StatelessWidget {
                           );
                         }).toList(),
                         validator: (value){
-                          if (value.isEmpty) {
+                          if (value==null) {
                             return 'Tank Name Cant be Empty';
                           }
+                          // print(value);
                           else tankName=value;
                         },
                         onChange: (value){}),
                     SizedBox(
                       height: 10,
                     ),
-                    // defaultFormText(
-                    //   textInputFormat:"[a-zA-Z0-9]",
-                    //   onTap: (){
-                    //   },
-                    //   onChanged: (value){},
-                    //     control: tankNameController,
-                    //     type: TextInputType.text,
-                    //     validator: (value) {
-                    //       if (value.isEmpty) {
-                    //         return 'Name Cant be Empty';
-                    //       }
-                    //     },
-                    //     label: 'Tank Num',
-                    //     prefix: Icons.circle),
+                    myDropDownMenu(
+                        label: 'Select Feed Type',
+                        listName: FishFarmCubit.get(context).feedIdList,
+                       // objectOFClass: objectOfAllTanksName,
+                        items: FishFarmCubit.get(context).feedIdList.map(( feed )
+                        {
+                          return DropdownMenuItem(
+                              value: feed,
+                              child: Row(
+                                children: [
+                                  Text(feed,
+                                  ),
+                                ],
+                              )
+                          );
+                        }).toList(),
+                        validator: (value){
+                          if (value==null) {
+                            return 'Feed Type Cant be Empty';
+                          }
+                          else feedName=value;
+                        },
+                        onChange: (value){}),
                     SizedBox(
                       height: 10,
                     ),
                     defaultFormText(
-                        textInputFormat: "[0-9]",
+                        textInputFormat: "[0-9.]",
                         onTap: (){},
                         onChanged: (value){},
-                        control: mortalityPscController,
+                        control: feedWeightController,
                         type: TextInputType.number,
                         validator: (value) {
                           if (value.isEmpty) {
-                            return 'Mortality Count Cant be Empty';
+                            return 'Feed Weight Cant be Empty';
                           }
                         },
-                        label: 'Mortality Count',
+                        label: 'Feed Weight(Kg)',
                         prefix: MyFlutterIcon1.glassEel),
                     SizedBox(
                       height: 10,
@@ -136,7 +129,7 @@ class AddMortality_Screen extends StatelessWidget {
                             firstDate: DateTime(2019),
                             lastDate: DateTime(2024) ).then((value) {
                           dateController.text=DateFormat.yMMMMd().format(value!);
-                          selectedMonth=DateFormat.yMMMM().format(value);
+
                         });
                       },
                       onSubmit: (value){
@@ -148,31 +141,16 @@ class AddMortality_Screen extends StatelessWidget {
                       height: 30,
                     ),
                     defaultButton(
-                        onTap: ()  async {
-                          if (formKey.currentState!.validate()) {
-                            await FishFarmCubit.get(context).getTotalSelectedTankData(tankName: tankName!);
-                            await FishFarmCubit.get(context).getDailySelectedTankData(tankName: tankName!,selectedDay:dateController.text );
-                            await FishFarmCubit.get(context).getMonthlySelectedTankData(tankName: tankName!, selectedMonth: selectedMonth! );
-                             FishFarmCubit.get(context).addToTotalTanksMortality(
-                               totalDailyMortality:FishFarmCubit.get(context).tankDailyMortality!+int.parse(mortalityPscController.text,) ,
-                               totalTankMortality:FishFarmCubit.get(context).tankTotalMortality!+int.parse(mortalityPscController.text),
-                               remaining: FishFarmCubit.get(context).tankTotalPscRemaining!-(int.parse(mortalityPscController.text)),
-                               mortalityCount: int.parse(mortalityPscController.text,),
-                                 tankName: tankName!,
-                                 datetime: DateTime.now().toString(),
-                                 mortalityDatetime: dateController.text,
-                             );
-                            FishFarmCubit.get(context).addToDailyReport(
-                                tankName: tankName!, day: dateController.text,
-                                totalMortality:FishFarmCubit.get(context).tankDailyMortality!+int.parse(mortalityPscController.text,)  ,
-                                pcsRemaining: FishFarmCubit.get(context).tankTotalPscRemaining!-(int.parse(mortalityPscController.text))
-                            );
-                             FishFarmCubit.get(context).addToMonthlyReport(
-                               totalMortality:FishFarmCubit.get(context).tankMonthlyMortality+int.parse(mortalityPscController.text) ,
-                                 tankName: tankName!, month: selectedMonth!,
-                                 pcsRemaining: FishFarmCubit.get(context).tankTotalPsc!-(FishFarmCubit.get(context).tankMonthlyMortality+int.parse(mortalityPscController.text)));
-
-                            FocusScope.of(context).unfocus();
+                        onTap: ()   async {
+                          if(formKey.currentState!.validate()){
+                           await FishFarmCubit.get(context).getTotalSelectedTankData(tankName: tankName!);
+                            FishFarmCubit.get(context).addDailyFeed(
+                              totalFeed:int.parse(feedWeightController.text)+FishFarmCubit.get(context).tankTotalFeed!,
+                                tankName: tankName!,
+                                datetime: DateTime.now().toString(),
+                                feedName: feedName!,
+                                feedDatetime: dateController.text,
+                                feedWeight: int.parse(feedWeightController.text));
                           }
                         },
                         buttonName: 'Submit'

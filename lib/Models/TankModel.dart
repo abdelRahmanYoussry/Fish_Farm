@@ -22,7 +22,7 @@ class TankModel{
     weight=json['weight'];
     psc=json['psc'];
     totalMortality=json['totalMortality'];
-    totalFeed=json['totalFeed'];
+    totalFeed=json['totalFeed'] ;
     avgPsc=json['avgPsc'];
     remaining=json['remaining'];
     //make a comment
