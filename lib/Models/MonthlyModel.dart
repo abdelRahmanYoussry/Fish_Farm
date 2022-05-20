@@ -2,7 +2,7 @@ class MonthlyModel{
   late String ?tankName;
   late String ?month;
   late int ?totalMortality;
-  late int ?totalFeed;
+  late num ?totalFeed;
   late int ?pcsRemaining;
   //make a comment
   MonthlyModel({

@@ -25,10 +25,10 @@ class FishFarmLogin extends StatelessWidget {
       child: BlocConsumer<FishFarmLoginCubit,FishFarmLoginStates>(
         listener: (context,state){
           if (state is FishFarmLoginErrorState)
-          showToast(text: state.error, state: ToastState.Error);
+          showToast(text: state.error.toString(), state: ToastState.Error);
           if (state is FishFarmLoginSuccessState)
           {
-            showToast(text: state.uid, state: ToastState.Success);
+            showToast(text: state.toString(), state: ToastState.Success);
             CashHelper.saveData(
                 key: 'uid',
                 value:state.uid

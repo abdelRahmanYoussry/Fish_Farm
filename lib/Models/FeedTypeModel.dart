@@ -1,15 +1,15 @@
-class CreateFeedModel{
+class FeedTypeModel{
   late String ?feedName;
-  late double ?totalPurchasedFeed;
-  late double ?remainingFeed;
+  late num ?totalPurchasedFeed;
+  late num ?remainingFeed;
   late String ?purchasedDate;
-  CreateFeedModel({
+  FeedTypeModel({
     this.feedName,
     this.purchasedDate,
     this.totalPurchasedFeed,
     this.remainingFeed
   });
-  CreateFeedModel.fromJson(Map<String,dynamic>json){
+  FeedTypeModel.fromJson(Map<String,dynamic>json){
     feedName=json['feedName'];
     totalPurchasedFeed=json['totalPurchasedFeed'];
     purchasedDate=json['purchasedDate'];

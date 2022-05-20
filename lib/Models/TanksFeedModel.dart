@@ -1,7 +1,7 @@
 class TanksFeedModel{
   late String ?tankName;
   late double ?feedWeight;
-  late int ?totalFeed;
+  late num ?totalFeed;
   late int ?totalRemainingFeed;
   late String ?userName;
   late String ?feedSize;

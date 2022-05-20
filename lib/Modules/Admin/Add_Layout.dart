@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 
 import 'Add_Feed.dart';
 import 'Add_Mortality.dart';
-import 'Add_Tank.dart';
+import 'Create_Tank.dart';
 import 'Create_Feed.dart';
+import 'Delete_Tank.dart';
+import 'EditDaily.dart';
 
 class Add_Home_Screen extends StatelessWidget {
   const Add_Home_Screen({Key? key}) : super(key: key);
@@ -31,13 +33,15 @@ class Add_Home_Screen extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             defaultButton(buttonName: 'CreateTank', onTap: (){
-               navigateTo(context, widget: AddTank_Screen());
+               navigateTo(context, widget: CreateTank_Screen());
             }),
             SizedBox(
               height: 30,
             ),
             defaultButton(buttonName: 'AddMortality', onTap: (){
               FishFarmCubit.get(context).getAllTankData();
+              FishFarmCubit.get(context).dailyModel=null;
+              FishFarmCubit.get(context).monthlyModel=null;
               navigateTo(context, widget: AddMortality_Screen());
             }),
             SizedBox(
@@ -52,7 +56,27 @@ class Add_Home_Screen extends StatelessWidget {
             defaultButton(buttonName: 'AddFeed', onTap: (){
               FishFarmCubit.get(context).getAllTankData();
               FishFarmCubit.get(context).getAllFeedTypesData();
+              FishFarmCubit.get(context).dailyModel=null;
+              FishFarmCubit.get(context).monthlyModel=null;
               navigateTo(context, widget: AddFeed_Screen());
+            }),
+            SizedBox(
+              height: 30,
+            ),
+            defaultButton(buttonName: 'DeleteTank', onTap: (){
+              FishFarmCubit.get(context).getAllTankData();
+              // FishFarmCubit.get(context).getAllFeedTypesData();
+              navigateTo(context, widget: DeleteTank_Screen());
+            }),
+            SizedBox(
+              height: 30,
+            ),
+            defaultButton(buttonName: 'EditDaily', onTap: (){
+              FishFarmCubit.get(context).getAllTankData();
+              FishFarmCubit.get(context).dailyModel=null;
+              // FishFarmCubit.get(context).getAllFeedTypesData();
+              navigateTo(context, widget: EditDaily_Screen());
+
             }),
           ],
         ),

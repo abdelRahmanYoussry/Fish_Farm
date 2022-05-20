@@ -1,24 +1,27 @@
 class DailyModel{
   late String ?tankName;
   late String ?day;
-  late int ?totalMortality;
-  late int ?totalFeed;
-  late int ?pcsRemaining;
+  late String ?feedType;
+  late int ?dailyMortality;
+  late num ?dailyFeed;
+  late int ?remainingPsc;
   //make a comment
   DailyModel({
     this.tankName,
-    this.totalMortality,
-    this.pcsRemaining,
+    this.dailyMortality,
+    this.remainingPsc,
     this.day,
-    this.totalFeed,
+    this.dailyFeed,
+    this.feedType
     //make a comment
   });
   DailyModel.fromJson(Map<String,dynamic>json){
     tankName=json['tankName'];
-    totalMortality=json['totalMortality'];
-    pcsRemaining=json['pcsRemaining'];
+    dailyMortality=json['dailyMortality'];
+    remainingPsc=json['remainingPsc'];
     day=json['day'];
-    totalFeed=json['totalFeed'];
+    dailyFeed=json['dailyFeed'];
+    feedType=json['feedType'];
     //make a comment
 
   }
@@ -26,9 +29,10 @@ class DailyModel{
     return{
       'tankName':tankName,
       'day':day,
-      'totalMortality':totalMortality,
-      'totalFeed':totalFeed,
-      'pcsRemaining':pcsRemaining,
+      'dailyMortality':dailyMortality,
+      'dailyFeed':dailyFeed,
+      'remainingPsc':remainingPsc,
+      'feedType':feedType
     };
 
   }

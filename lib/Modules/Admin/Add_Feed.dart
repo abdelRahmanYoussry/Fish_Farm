@@ -10,12 +10,13 @@ import '../../Shared/Componets/constans.dart';
 import '../../Shared/Style/style.dart';
 
 class AddFeed_Screen extends StatelessWidget {
-  var tankNameController = TextEditingController();
+  // var tankNameController = TextEditingController();
   String ?tankName;
   String ?feedName;
   var feedWeightController = TextEditingController();
   var dateController = TextEditingController();
   var formKey = GlobalKey<FormState>();
+  String ?selectedMonth;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FishFarmCubit, FishFarmStates>(
@@ -83,11 +84,12 @@ class AddFeed_Screen extends StatelessWidget {
                               )
                           );
                         }).toList(),
-                        validator: (value){
+                        validator: (value)  {
                           if (value==null) {
                             return 'Feed Type Cant be Empty';
                           }
-                          else feedName=value;
+                          else
+                            feedName=value;
                         },
                         onChange: (value){}),
                     SizedBox(
@@ -95,7 +97,9 @@ class AddFeed_Screen extends StatelessWidget {
                     ),
                     defaultFormText(
                         textInputFormat: "[0-9.]",
-                        onTap: (){},
+                        onTap: ()  {
+
+                        },
                         onChanged: (value){},
                         control: feedWeightController,
                         type: TextInputType.number,
@@ -129,28 +133,57 @@ class AddFeed_Screen extends StatelessWidget {
                             firstDate: DateTime(2019),
                             lastDate: DateTime(2024) ).then((value) {
                           dateController.text=DateFormat.yMMMMd().format(value!);
-
+                          selectedMonth=DateFormat.yMMMM().format(value);
                         });
                       },
                       onSubmit: (value){
                         print(value);
                       },
-                      onChanged: (){},
+                      onChanged: (){
+                      },
                     ),
                     SizedBox(
                       height: 30,
                     ),
                     defaultButton(
                         onTap: ()   async {
-                          if(formKey.currentState!.validate()){
+                          if(formKey.currentState!.validate())
+                          {
                            await FishFarmCubit.get(context).getTotalSelectedTankData(tankName: tankName!);
-                            FishFarmCubit.get(context).addDailyFeed(
-                              totalFeed:int.parse(feedWeightController.text)+FishFarmCubit.get(context).tankTotalFeed!,
+                           await FishFarmCubit.get(context).getMonthlySelectedTankData(tankName: tankName!, selectedMonth: selectedMonth!);
+                           await FishFarmCubit.get(context).getDailyReportData(tankName: tankName!, selectedDay: dateController.text);
+                           await FishFarmCubit.get(context).getRemainingOfSelectedFeed(feedType: feedName!);
+                           // await FishFarmCubit.get(context).getRemainingOfSelectedFeed(feedType: feedName!);
+                            FishFarmCubit.get(context).addFeedToTanks(
+                              totalFeed:double.parse(feedWeightController.text)+FishFarmCubit.get(context).tankModel!.totalFeed!,
                                 tankName: tankName!,
                                 datetime: DateTime.now().toString(),
                                 feedName: feedName!,
                                 feedDatetime: dateController.text,
-                                feedWeight: int.parse(feedWeightController.text));
+                                feedWeight: double.parse(feedWeightController.text),
+                               dailyTotalFeed:double.parse(feedWeightController.text)+FishFarmCubit.get(context).dailyModel!.dailyFeed!
+                            );
+                            FishFarmCubit.get(context).addToDailyReport(
+                              dailyMortality:FishFarmCubit.get(context).dailyModel!.dailyMortality ??0,
+                                remainingPsc: FishFarmCubit.get(context).dailyModel!.remainingPsc??FishFarmCubit.get(context).tankModel!.remaining,
+                                tankName: tankName!,
+                                day: dateController.text,
+                              feedType: feedName,
+                              dailyFeed:FishFarmCubit.get(context).dailyModel!.dailyFeed!+double.parse(feedWeightController.text),
+                              month: selectedMonth!,
+                            );
+                            FishFarmCubit.get(context).addToMonthlyReport(
+                                tankName: tankName!,
+                                month: selectedMonth!,
+                                pcsRemaining: FishFarmCubit.get(context).monthlyModel!.pcsRemaining!,
+                                totalFeed: FishFarmCubit.get(context).monthlyModel!.totalFeed!+double.parse(feedWeightController.text),
+                              totalMortality:  FishFarmCubit.get(context).monthlyModel!.totalMortality!,
+                              // day: dateController.text,
+                            );
+                            FishFarmCubit.get(context).updateRemainingFeed(
+                              remainingFeed: FishFarmCubit.get(context).feedTypeModel!.remainingFeed!-double.parse(feedWeightController.text),
+                              feedType: feedName!
+                            );
                           }
                         },
                         buttonName: 'Submit'

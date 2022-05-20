@@ -134,14 +134,15 @@ class DailyReportView extends StatelessWidget {
                           if(formKey.currentState!.validate())
                           {
                             await FishFarmCubit.get(context).getTotalSelectedTankData(tankName: tankName!);
+                            await FishFarmCubit.get(context).getDailyReportData(
+                                tankName: tankName! , selectedDay: dailyController.text);
                             print(dailyController.text+' $tankName '+ selectedMonth!);
-
 
                              cubit.isEnable=true;
                              showModalBottomSheet(
                                elevation: 0.0,
                                  backgroundColor: Colors.transparent,
-                                 context: context, builder: (context)=>bottomSheetBuilder());
+                                 context: context, builder: (context)=>bottomSheetBuilder(context: context));
                            // BottomSheet(
                            //   builder: (context)=>bottomSheetBuilder(),
                            //   onClosing: (){},);
@@ -253,7 +254,7 @@ class DailyReportView extends StatelessWidget {
       },
     );
   }
-Widget bottomSheetBuilder()=>Padding(
+Widget bottomSheetBuilder({@required context})=>Padding(
   padding: const EdgeInsets.only(bottom: 60,left: 10,right: 10),
   child:   Container(
     width: 200,
@@ -292,7 +293,7 @@ Widget bottomSheetBuilder()=>Padding(
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text('Corco (5ّ~~10 gm)',style: TextStyle(
+                child: Text(FishFarmCubit.get(context).tankModel!.avgPsc.toString(),style: TextStyle(
                     color: Colors.white,fontSize: 20
                 ),),
               ),
@@ -303,13 +304,13 @@ Widget bottomSheetBuilder()=>Padding(
             children: [
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text('Total Weight :',style: TextStyle(
+                child: Text('Tank Total Weight(Kg) :',style: TextStyle(
                     color: Colors.white,fontSize: 20
                 ),),
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text('84.5 Kg',style: TextStyle(
+                child: Text(FishFarmCubit.get(context).tankModel!.weight.toString(),style: TextStyle(
                     color: Colors.white,fontSize: 20
                 ),),
               ),
@@ -325,7 +326,7 @@ Widget bottomSheetBuilder()=>Padding(
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text('22 pcs',style: TextStyle(
+                child: Text(FishFarmCubit.get(context).tankModel!.totalMortality.toString(),style: TextStyle(
                     color: Colors.white,fontSize: 20
                 ),),
               ),
@@ -341,7 +342,7 @@ Widget bottomSheetBuilder()=>Padding(
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text('12650 pcs',style: TextStyle(
+                child: Text(FishFarmCubit.get(context).tankModel!.remaining.toString(),style: TextStyle(
                     color: Colors.white,fontSize: 20
                 ),),
               ),
@@ -351,14 +352,14 @@ Widget bottomSheetBuilder()=>Padding(
             children: [
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text('Feed Tybe  :',style: TextStyle(
-                    color: Colors.white,fontSize: 20
+                child: Text('Feed Type  :',
+                  style: TextStyle(color: Colors.white,fontSize: 20
                 ),),
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text('Dibaq size 100',style: TextStyle(
-                    color: Colors.white,fontSize: 20
+                child: Text(FishFarmCubit.get(context).dailyModel!.feedType.toString(),
+                  style: TextStyle(color: Colors.white,fontSize: 20
                 ),),
               ),
             ],
@@ -367,14 +368,14 @@ Widget bottomSheetBuilder()=>Padding(
             children: [
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text('Feed qun  :',style: TextStyle(
-                    color: Colors.white,fontSize: 20
+                child: Text('Daily Feed Weight(Kg):',
+                  style: TextStyle(color: Colors.white,fontSize: 20
                 ),),
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text('0.850 kg',style: TextStyle(
-                    color: Colors.white,fontSize: 20
+                child: Text(FishFarmCubit.get(context).dailyModel!.dailyFeed.toString(),
+                  style: TextStyle(color: Colors.white,fontSize: 20
                 ),),
               ),
             ],

@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../Shared/Componets/components.dart';
 import '../../Shared/Style/style.dart';
 
-class AddTank_Screen extends StatelessWidget {
+class CreateTank_Screen extends StatelessWidget {
   var tankNameController = TextEditingController();
   var tankWeightController = TextEditingController();
   var tankPscController = TextEditingController();

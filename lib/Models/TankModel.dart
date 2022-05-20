@@ -3,7 +3,7 @@ class TankModel{
   late double? weight;
   late int ?psc;
   late int ?totalMortality;
-  late int ?totalFeed;
+  late num ?totalFeed;
   late int ?remaining;
   late double ?avgPsc;
   //make a comment

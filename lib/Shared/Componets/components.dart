@@ -166,6 +166,7 @@ Widget defaultFormText({
 
 Widget defaultButton({
   Color backgroundColor = Colors.blueGrey,
+  Color borderColor = Colors.limeAccent,
   required String buttonName,
   required Function() ? onTap,}) {
   return OutlinedButton(
@@ -174,7 +175,7 @@ Widget defaultButton({
       padding: EdgeInsets.all(20),
       side: BorderSide(
           style: BorderStyle.solid,
-          color: Colors.limeAccent,
+          color: borderColor,
           width: 5
       ),
       shape: StadiumBorder(),
