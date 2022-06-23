@@ -21,9 +21,16 @@ class AddFeed_Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<FishFarmCubit, FishFarmStates>(
       listener: (context, state) {
+        if(state is AddFeedLoadingState||state is AddToDailyReportLoadingState||state is AddToMonthlyReportLoadingState||state is UpdateFeedLoadingState){
+          showToast(text: 'Loading Please wait', state: ToastState.Warning);
+        }
+        else if(state is AddFeedSuccessState||state is AddToDailyReportSuccessState ||state is AddToMonthlyReportSuccessState||state is UpdateFeedSuccessState ){
+          showToast(text: 'Feed has been Added', state: ToastState.Success);
+        }else if(state is AddFeedErrorState||state is AddToDailyReportErrorState||state is AddToMonthlyReportErrorState||state is UpdateFeedErrorState ){
+          showToast(text: 'Error while Add Feed', state: ToastState.Error);
+        }
       },
       builder: (context, state) {
-
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(40),
@@ -45,7 +52,7 @@ class AddFeed_Screen extends StatelessWidget {
                         label: 'Select Tank',
                         listName: FishFarmCubit.get(context).tanksIdList,
                        // objectOFClass: objectOfAllTanksName,
-                        items: FishFarmCubit.get(context).tanksIdList.map(( tank )
+                        myDropDownItems: FishFarmCubit.get(context).tanksIdList.map(( tank )
                         {
                           return DropdownMenuItem(
                               value: tank,
@@ -72,7 +79,7 @@ class AddFeed_Screen extends StatelessWidget {
                         label: 'Select Feed Type',
                         listName: FishFarmCubit.get(context).feedIdList,
                        // objectOFClass: objectOfAllTanksName,
-                        items: FishFarmCubit.get(context).feedIdList.map(( feed )
+                        myDropDownItems: FishFarmCubit.get(context).feedIdList.map(( feed )
                         {
                           return DropdownMenuItem(
                               value: feed,
@@ -161,7 +168,8 @@ class AddFeed_Screen extends StatelessWidget {
                                 feedName: feedName!,
                                 feedDatetime: dateController.text,
                                 feedWeight: double.parse(feedWeightController.text),
-                               dailyTotalFeed:double.parse(feedWeightController.text)+FishFarmCubit.get(context).dailyModel!.dailyFeed!
+                               dailyTotalFeed:double.parse(feedWeightController.text)+FishFarmCubit.get(context).dailyModel!.dailyFeed!,
+                              remainingFeedType:  FishFarmCubit.get(context).feedTypeModel!.remainingFeed!-double.parse(feedWeightController.text),
                             );
                             FishFarmCubit.get(context).addToDailyReport(
                               dailyMortality:FishFarmCubit.get(context).dailyModel!.dailyMortality ??0,

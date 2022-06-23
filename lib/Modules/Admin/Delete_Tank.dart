@@ -46,7 +46,7 @@ class DeleteTank_Screen extends StatelessWidget {
                         label: 'Select Tank',
                         listName: FishFarmCubit.get(context).tanksIdList,
                        // objectOFClass: objectOfAllTanksName,
-                        items: FishFarmCubit.get(context).tanksIdList.map(( tank )
+                        myDropDownItems: FishFarmCubit.get(context).tanksIdList.map(( tank )
                         {
                           return DropdownMenuItem(
                               value: tank,

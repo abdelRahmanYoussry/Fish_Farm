@@ -13,6 +13,7 @@ import 'Shared/Componets/constans.dart';
 import 'Shared/Network/local/cash_helper.dart';
 import 'Shared/PlaneViewCubit/PlaneViewStates.dart';
 import 'Shared/PlaneViewCubit/planeViewCubit.dart';
+import 'package:flutter/services.dart';
 
 
 void main()async{
@@ -26,9 +27,8 @@ void main()async{
   if(uid!=null){
     widget=HomeScreen();
   }else{
-    widget=FishFarmLogin();
+    widget=FishFarmLoginScreen();
   }
-
   runApp(FishFarm(
     startScreen:widget
   ));
@@ -42,8 +42,7 @@ class FishFarm extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context)=>FishFarmCubit(InitialState())..getUserData()),
-        BlocProvider(create: (context)=>PlaneViewCubit(PlaneViewInitialState())..sortGridView()),
-      ],
+        BlocProvider(create: (context)=>PlaneViewCubit(PlaneViewInitialState())..sortGridView()),],
       child: MaterialApp(
         theme: ThemeData(
           scaffoldBackgroundColor: Colors.white,
@@ -69,10 +68,10 @@ class FishFarm extends StatelessWidget {
             selectedIconTheme: IconThemeData(
                size: 35,
             )
-        )
-
+        ),
         ),
         debugShowCheckedModeBanner: false,
+
         home: startScreen,
       ),
     );

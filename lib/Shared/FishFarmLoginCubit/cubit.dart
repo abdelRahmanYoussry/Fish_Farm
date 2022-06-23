@@ -21,6 +21,7 @@ FishFarmUserModel? model;
      email: email,
      password: password).then((value)
  {
+
    print(value.user!.uid);
    emit(FishFarmLoginSuccessState(value.user!.uid));
  }

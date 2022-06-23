@@ -26,59 +26,61 @@ class Add_Home_Screen extends StatelessWidget {
         ),
       ) ,
       backgroundColor: defaultColor,
-      body: Container(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            defaultButton(buttonName: 'CreateTank', onTap: (){
-               navigateTo(context, widget: CreateTank_Screen());
-            }),
-            SizedBox(
-              height: 30,
-            ),
-            defaultButton(buttonName: 'AddMortality', onTap: (){
-              FishFarmCubit.get(context).getAllTankData();
-              FishFarmCubit.get(context).dailyModel=null;
-              FishFarmCubit.get(context).monthlyModel=null;
-              navigateTo(context, widget: AddMortality_Screen());
-            }),
-            SizedBox(
-              height: 30,
-            ),
-            defaultButton(buttonName: 'CreateFeed', onTap: (){
-              navigateTo(context, widget: CreateFeed_Screen());
-            }),
-            SizedBox(
-              height: 30,
-            ),
-            defaultButton(buttonName: 'AddFeed', onTap: (){
-              FishFarmCubit.get(context).getAllTankData();
-              FishFarmCubit.get(context).getAllFeedTypesData();
-              FishFarmCubit.get(context).dailyModel=null;
-              FishFarmCubit.get(context).monthlyModel=null;
-              navigateTo(context, widget: AddFeed_Screen());
-            }),
-            SizedBox(
-              height: 30,
-            ),
-            defaultButton(buttonName: 'DeleteTank', onTap: (){
-              FishFarmCubit.get(context).getAllTankData();
-              // FishFarmCubit.get(context).getAllFeedTypesData();
-              navigateTo(context, widget: DeleteTank_Screen());
-            }),
-            SizedBox(
-              height: 30,
-            ),
-            defaultButton(buttonName: 'EditDaily', onTap: (){
-              FishFarmCubit.get(context).getAllTankData();
-              FishFarmCubit.get(context).dailyModel=null;
-              // FishFarmCubit.get(context).getAllFeedTypesData();
-              navigateTo(context, widget: EditDaily_Screen());
+      body: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              defaultButton(buttonName: 'CreateTank', onTap: (){
+                 navigateTo(context, widget: CreateTank_Screen());
+              }),
+              SizedBox(
+                height: 30,
+              ),
+              defaultButton(buttonName: 'AddMortality', onTap: (){
+                FishFarmCubit.get(context).getAllTankData();
+                FishFarmCubit.get(context).dailyModel=null;
+                FishFarmCubit.get(context).monthlyModel=null;
+                navigateTo(context, widget: AddMortality_Screen());
+              }),
+              SizedBox(
+                height: 30,
+              ),
+              defaultButton(buttonName: 'CreateFeed', onTap: (){
+                navigateTo(context, widget: CreateFeed_Screen());
+              }),
+              SizedBox(
+                height: 30,
+              ),
+              defaultButton(buttonName: 'AddFeed', onTap: (){
+                FishFarmCubit.get(context).getAllTankData();
+                FishFarmCubit.get(context).getAllFeedTypesData();
+                FishFarmCubit.get(context).dailyModel=null;
+                FishFarmCubit.get(context).monthlyModel=null;
+                navigateTo(context, widget: AddFeed_Screen());
+              }),
+              SizedBox(
+                height: 30,
+              ),
+              defaultButton(buttonName: 'DeleteTank', onTap: (){
+                FishFarmCubit.get(context).getAllTankData();
+                // FishFarmCubit.get(context).getAllFeedTypesData();
+                navigateTo(context, widget: DeleteTank_Screen());
+              }),
+              SizedBox(
+                height: 30,
+              ),
+              defaultButton(buttonName: 'EditDaily', onTap: (){
+                FishFarmCubit.get(context).getAllTankData();
+                FishFarmCubit.get(context).dailyModel=null;
+                // FishFarmCubit.get(context).getAllFeedTypesData();
+                navigateTo(context, widget: EditDaily_Screen());
 
-            }),
-          ],
+              }),
+            ],
+          ),
         ),
       ),
     );

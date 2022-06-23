@@ -50,12 +50,12 @@ class CreateTankErrorState extends FishFarmStates{
   CreateTankErrorState(this.error);
 }
 
-class AddMortalityLoadingState extends FishFarmStates{}
-class AddMortalitySuccessState extends FishFarmStates{}
-class AddMortalityErrorState extends FishFarmStates{
-  final String error;
-  AddMortalityErrorState(this.error);
-}
+// class AddMortalityLoadingState extends FishFarmStates{}
+// class AddMortalitySuccessState extends FishFarmStates{}
+// class AddMortalityErrorState extends FishFarmStates{
+//   final String error;
+//   AddMortalityErrorState(this.error);
+// }
 
 class AddTanksMortalityLoadingState extends FishFarmStates{}
 class AddTanksMortalitySuccessState extends FishFarmStates{}
@@ -90,6 +90,13 @@ class GetMonthlyTankSuccessState extends FishFarmStates{}
 class GetMonthlyTankErrorState extends FishFarmStates{
   final String error;
   GetMonthlyTankErrorState(this.error);
+}
+
+class GetMonthlyDataByDaysLoadingState extends FishFarmStates{}
+class GetMonthlyDataByDaysSuccessState extends FishFarmStates{}
+class GetMonthlyDataByDaysErrorState extends FishFarmStates{
+  final String error;
+  GetMonthlyDataByDaysErrorState(this.error);
 }
 
 class GetDailyMortalityInTankCollectionLoadingState extends FishFarmStates{}
@@ -154,9 +161,28 @@ class DeleteTankErrorState extends FishFarmStates{
 }
 
 
-class EditTanksDataLoadingState extends FishFarmStates{}
-class EditTanksDataSuccessState extends FishFarmStates{}
-class EditTanksDataErrorState extends FishFarmStates{
+class EditMortalityDataLoadingState extends FishFarmStates{}
+class EditMortalityDataSuccessState extends FishFarmStates{}
+class EditMortalityDataErrorState extends FishFarmStates{
   final String error;
-  EditTanksDataErrorState(this.error);
+  EditMortalityDataErrorState(this.error);
+}
+
+class EditFeedDataLoadingState extends FishFarmStates{}
+class EditFeedDataSuccessState extends FishFarmStates{}
+class EditFeedDataErrorState extends FishFarmStates{
+  final String error;
+  EditFeedDataErrorState(this.error);
+}
+class GetIdDailyMortalityLoadingState extends FishFarmStates{}
+class GetIdDailyMortalitySuccessState extends FishFarmStates{}
+class GetIdDailyMortalityErrorState extends FishFarmStates{
+  final String error;
+  GetIdDailyMortalityErrorState(this.error);
+}
+class GetIdDailyFeedLoadingState extends FishFarmStates{}
+class GetIdDailyFeedSuccessState extends FishFarmStates{}
+class GetIdDailyFeedErrorState extends FishFarmStates{
+  final String error;
+  GetIdDailyFeedErrorState(this.error);
 }

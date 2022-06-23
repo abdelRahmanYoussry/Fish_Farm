@@ -20,7 +20,14 @@ class AddMortality_Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<FishFarmCubit, FishFarmStates>(
       listener: (context, state) {
-        // TODO: implement listener
+         if(state is AddTanksMortalityLoadingState||state is AddToDailyReportLoadingState||state is AddToMonthlyReportLoadingState){
+        showToast(text: 'Loading please Wait', state: ToastState.Warning);
+        }
+         else if(state is AddTanksMortalitySuccessState||state is AddToDailyReportSuccessState ||state is AddToMonthlyReportSuccessState ){
+          showToast(text: 'Mortality has been Added', state: ToastState.Success);
+        }else if(state is AddTanksMortalityErrorState||state is AddToDailyReportErrorState||state is AddToMonthlyReportErrorState ){
+          showToast(text: 'Error while Add Mortality', state: ToastState.Error);
+        }
       },
       builder: (context, state) {
 
@@ -60,8 +67,8 @@ class AddMortality_Screen extends StatelessWidget {
                     myDropDownMenu(
                         label: 'Select Tank',
                         listName: FishFarmCubit.get(context).tanksIdList,
-                        objectOFClass: objectOfAllTanksName,
-                        items: FishFarmCubit.get(context).tanksIdList.map(( tank )
+                        myDropDownValue: objectOfAllTanksName,
+                        myDropDownItems: FishFarmCubit.get(context).tanksIdList.map(( tank )
                         {
                           return DropdownMenuItem(
                               value: tank,
@@ -153,31 +160,45 @@ class AddMortality_Screen extends StatelessWidget {
                             await FishFarmCubit.get(context).getTotalSelectedTankData(tankName: tankName!);
                             await FishFarmCubit.get(context).getDailyMortalityInTankCollection(tankName: tankName!,selectedDay:dateController.text );
                             await FishFarmCubit.get(context).getMonthlySelectedTankData(tankName: tankName!, selectedMonth: selectedMonth! );
-                            await FishFarmCubit.get(context).getDailyReportData(
-                                tankName: tankName!,
-                                selectedDay: dateController.text);
-                             FishFarmCubit.get(context).addMortalityToTanks(
-                               tankName: tankName!,
-                               datetime: DateTime.now().toString(),
-                               mortalityDatetime: dateController.text,
-                               totalDailyMortality:FishFarmCubit.get(context).tankDailyMortality!+int.parse(mortalityPscController.text,) ,
-                               totalTankMortality:FishFarmCubit.get(context).tankModel!.totalMortality!+int.parse(mortalityPscController.text),
-                               remaining: FishFarmCubit.get(context).tankModel!.remaining!-(int.parse(mortalityPscController.text)),
-                               mortalityCount: int.parse(mortalityPscController.text,)
-                             );
-                            FishFarmCubit.get(context).addToDailyReport(
-                                tankName: tankName!, day: dateController.text,
-                                dailyMortality:FishFarmCubit.get(context).dailyModel!.dailyMortality!+int.parse(mortalityPscController.text,)  ,
-                                remainingPsc: FishFarmCubit.get(context).tankModel!.remaining!-(int.parse(mortalityPscController.text)),
-                              dailyFeed: FishFarmCubit.get(context).dailyModel!.dailyFeed??0,
-                              month: selectedMonth
-                            );
-                             FishFarmCubit.get(context).addToMonthlyReport(
-                               totalMortality:FishFarmCubit.get(context).monthlyModel!.totalMortality!+int.parse(mortalityPscController.text) ,
-                                 tankName: tankName!, month: selectedMonth!,
-                                 pcsRemaining: FishFarmCubit.get(context).tankModel!.psc!-(FishFarmCubit.get(context).monthlyModel!.totalMortality!+int.parse(mortalityPscController.text)),
-                               day: dateController.text,
-                             );
+                            await FishFarmCubit.get(context).getDailyReportData(tankName: tankName!, selectedDay: dateController.text);
+                            //prevent of became minis Remaining Psc
+                            if(FishFarmCubit.get(context).tankModel!.remaining!>=int.parse(mortalityPscController.text,)
+                            ||FishFarmCubit.get(context).dailyModel!.remainingPsc!>=int.parse(mortalityPscController.text,)
+                            ||FishFarmCubit.get(context).monthlyModel!.pcsRemaining!>=int.parse(mortalityPscController.text,)
+                            ){
+                              FishFarmCubit.get(context).addMortalityToTanks(
+                                  tankName: tankName!,
+                                  datetime: DateTime.now().toString(),
+                                  mortalityDatetime: dateController.text,
+                                  totalDailyMortality:FishFarmCubit.get(context).tankDailyMortality!+int.parse(mortalityPscController.text,) ,
+                                  totalTankMortality:FishFarmCubit.get(context).tankModel!.totalMortality!+int.parse(mortalityPscController.text),
+                                  remaining: FishFarmCubit.get(context).tankModel!.remaining!-(int.parse(mortalityPscController.text)),
+                                  mortalityCount: int.parse(mortalityPscController.text,)
+                              );
+                              FishFarmCubit.get(context).addToDailyReport(
+                                  tankName: tankName!, day: dateController.text,
+                                  dailyMortality:FishFarmCubit.get(context).dailyModel!.dailyMortality!+int.parse(mortalityPscController.text,)  ,
+                                  remainingPsc: FishFarmCubit.get(context).tankModel!.remaining!-(int.parse(mortalityPscController.text)),
+                                  dailyFeed: FishFarmCubit.get(context).dailyModel!.dailyFeed??0,
+                                  month: selectedMonth
+                              );
+                              FishFarmCubit.get(context).addToMonthlyReport(
+                                totalMortality:FishFarmCubit.get(context).monthlyModel!.totalMortality!+int.parse(mortalityPscController.text) ,
+                                tankName: tankName!, month: selectedMonth!,
+                                pcsRemaining: FishFarmCubit.get(context).tankModel!.psc!-(FishFarmCubit.get(context).monthlyModel!.totalMortality!+int.parse(mortalityPscController.text)),
+                                day: dateController.text,
+                              );
+
+                            }
+                            else if(FishFarmCubit.get(context).tankModel!.remaining!<int.parse(mortalityPscController.text,)
+                          ||FishFarmCubit.get(context).dailyModel!.remainingPsc!>=int.parse(mortalityPscController.text,)
+                          ||FishFarmCubit.get(context).monthlyModel!.pcsRemaining!>=int.parse(mortalityPscController.text,))
+                          {
+                            showToast(text: 'Cant Make Mortality Higher than the remaining Psc , Remaining Psc is: ${FishFarmCubit.get(context).tankModel!.remaining!}',
+                                state: ToastState.Error);
+                          }
+
+
                             FocusScope.of(context).unfocus();
                           }
                         },

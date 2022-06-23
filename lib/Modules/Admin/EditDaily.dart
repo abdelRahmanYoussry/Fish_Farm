@@ -1,3 +1,4 @@
+import 'package:fish_farm/Models/FeedTypeModel.dart';
 import 'package:fish_farm/Modules/Admin/Add_Layout.dart';
 import 'package:fish_farm/Shared/AppCubit/Cubit.dart';
 import 'package:fish_farm/Shared/AppCubit/States.dart';
@@ -33,6 +34,15 @@ class EditDaily_Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<FishFarmCubit, FishFarmStates>(
       listener: (context, state) {
+        // if(state is EditTanksDataLoadingState){
+        //   showToast(text: 'Please Wait', state: ToastState.Warning);
+        // }
+        // if(state is EditTanksDataSuccessState){
+        //   showToast(text: 'Edit has been Added', state: ToastState.Success);
+        // }
+        // if(state is EditTanksDataErrorState){
+        //   showToast(text: 'Error While Editing ', state: ToastState.Error);
+        // }
       },
       builder: (context, state) {
         var cubit=FishFarmCubit.get(context);
@@ -57,8 +67,7 @@ class EditDaily_Screen extends StatelessWidget {
                       myDropDownMenu(
                           label: 'Select Tank',
                           listName: FishFarmCubit.get(context).tanksIdList,
-                         // objectOFClass: objectOfAllTanksName,
-                          items: FishFarmCubit.get(context).tanksIdList.map(( tank )
+                          myDropDownItems: FishFarmCubit.get(context).tanksIdList.map(( tank )
                           {
                             return DropdownMenuItem(
                                 value: tank,
@@ -74,7 +83,6 @@ class EditDaily_Screen extends StatelessWidget {
                             if (value==null) {
                               return 'Tank Name Cant be Empty';
                             }
-                            // print(value);
                             else tankName=value;
                           },
                           onChange: (value){}),
@@ -104,11 +112,8 @@ class EditDaily_Screen extends StatelessWidget {
                             selectedMonth=DateFormat.yMMMM().format(value);
                           });
                         },
-                        onSubmit: (value){
-                          print(value);
-                        },
-                        onChanged: (){
-                        },
+                        onSubmit: (value){print(value);},
+                        onChanged: (){},
                       ),
                       SizedBox(
                         height: 30,
@@ -119,44 +124,21 @@ class EditDaily_Screen extends StatelessWidget {
                             {
                             await  cubit.getDailyReportData(tankName: tankName!, selectedDay: dateController.text);
                             await  cubit.getMonthlySelectedTankData(tankName: tankName!, selectedMonth: selectedMonth!);
-                            await FishFarmCubit.get(context).getTotalSelectedTankData(tankName: tankName!);
-                            await FishFarmCubit.get(context).getRemainingOfSelectedFeed(feedType: cubit.dailyModel!.feedType!);
-                            // print(FishFarmCubit.get(context).dailyModel!.day);
-                            feedWeightController.text=cubit.dailyModel!.dailyFeed.toString();
-                            mortalityController.text=cubit.dailyModel!.dailyMortality.toString();
+                            await cubit.getTotalSelectedTankData(tankName: tankName!);
+                                cubit.getAllFeedTypesData();
+                            if(cubit.dailyModel!.feedType!=null) {
+                              await cubit.getRemainingOfSelectedFeed(feedType: cubit.dailyModel!.feedType!);
+                              await cubit.getIdDailyFeed(tankName: tankName!, day: dateController.text);
+                            }
+                            if(cubit.dailyModel!.dailyMortality!>0){
+                          await  cubit.getIdDailyMortality(tankName: tankName!, day: dateController.text);
+                            }
+                              feedWeightController.text=cubit.dailyModel!.dailyFeed.toString();
+                              mortalityController.text=cubit.dailyModel!.dailyMortality.toString();
+                              print(cubit.dailyModel!.dailyMortality.toString());
+                              feedName=cubit.dailyModel!.feedType.toString();
 
-                             // await FishFarmCubit.get(context).getTotalSelectedTankData(tankName: tankName!);
-                             // await FishFarmCubit.get(context).getMonthlySelectedTankData(tankName: tankName!, selectedMonth: selectedMonth!);
-                             // await FishFarmCubit.get(context).getDailyReportData(tankName: tankName!, selectedDay: dateController.text);
-                             // await FishFarmCubit.get(context).getRemainingOfSelectedFeed(feedType: feedName!);
-                             // await FishFarmCubit.get(context).getRemainingOfSelectedFeed(feedType: feedName!);
-                             //  FishFarmCubit.get(context).addFeedToTanks(
-                             //    totalFeed:double.parse(feedWeightController.text)+FishFarmCubit.get(context).tankModel!.totalFeed!,
-                             //      tankName: tankName!,
-                             //      datetime: DateTime.now().toString(),
-                             //      feedName: feedName!,
-                             //      feedDatetime: dateController.text,
-                             //      feedWeight: double.parse(feedWeightController.text),
-                             //     dailyTotalFeed:double.parse(feedWeightController.text)+FishFarmCubit.get(context).dailyModel!.dailyFeed!
-                             //  );
-                             //  FishFarmCubit.get(context).addToDailyReport(
-                             //    dailyMortality:FishFarmCubit.get(context).dailyModel!.dailyMortality ??0,
-                             //      remainingPsc: FishFarmCubit.get(context).dailyModel!.remainingPsc??0,
-                             //      tankName: tankName!,
-                             //      day: dateController.text,
-                             //    dailyFeed:FishFarmCubit.get(context).dailyModel!.dailyFeed!+double.parse(feedWeightController.text)
-                             //  );
-                             //  FishFarmCubit.get(context).addToMonthlyReport(
-                             //      tankName: tankName!,
-                             //      month: selectedMonth!,
-                             //      pcsRemaining: FishFarmCubit.get(context).monthlyModel!.pcsRemaining!,
-                             //      totalFeed: FishFarmCubit.get(context).monthlyModel!.totalFeed!+double.parse(feedWeightController.text),
-                             //    totalMortality:  FishFarmCubit.get(context).monthlyModel!.totalMortality!,
-                             //  );
-                             //  FishFarmCubit.get(context).updateRemainingFeed(
-                             //    remainingFeed: FishFarmCubit.get(context).feedTypeModel!.remainingFeed!-double.parse(feedWeightController.text),
-                             //    feedType: feedName!
-                             //  );
+                              
                             }
                           },
                           buttonName: 'Submit'
@@ -169,7 +151,7 @@ class EditDaily_Screen extends StatelessWidget {
                         Form(
                           key: showDailyFormKey,
                           child: Container(
-                            height: 350,
+                            height: 400,
                             width: 250,
                             decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.8),
@@ -192,23 +174,7 @@ class EditDaily_Screen extends StatelessWidget {
                                   SizedBox(
                                     height: 20,
                                   ),
-                                  defaultFormText(
-                                      textInputFormat: "[0-9.]",
-                                      borderColor: Colors.black,
-                                      labelColor: Colors.black,
-                                      prefixIconColor: Colors.black,
-                                      control: feedWeightController,
-                                      type: TextInputType.number,
-                                      validator:  (value) {
-                                        if (value.isEmpty) {
-                                          return 'Feed Weight Cant be Empty';
-                                        }
-                                      },
-                                      label: 'Feed Weight(Kg)',
-                                      prefix: MyFlutterIcon1.glassEel),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
+                                  if(cubit.dailyModel!.dailyMortality!>0)
                                   defaultFormText(
                                       borderColor: Colors.black,
                                       labelColor: Colors.black,
@@ -224,9 +190,82 @@ class EditDaily_Screen extends StatelessWidget {
                                         }
                                       },
                                       label: 'Mortality Count',
-                                      prefix: MyFlutterIcon1.glassEel),
+                                      prefix: MyFlutterIcon1.glassEel,
+                                      onSubmit: (value){
+                                        mortalityController.text=value;
+                                      }
+                                  ),
+                                  if(cubit.dailyModel!.dailyMortality!>0&&cubit.dailyModel!.dailyMortality!=null)
                                   SizedBox(
-                                    height: 15,
+                                    height: 20,
+                                  ),
+                                  if(cubit.dailyModel!.dailyFeed!>0&&cubit.dailyModel!.feedType!=null)
+                                  defaultFormText(
+                                      textInputFormat: "[0-9.]",
+                                      borderColor: Colors.black,
+                                      labelColor: Colors.black,
+                                      prefixIconColor: Colors.black,
+                                      control: feedWeightController,
+                                      type: TextInputType.number,
+                                      validator:  (value) {
+                                        if (value.isEmpty) {
+                                          return 'Feed Weight Cant be Empty';
+                                        }
+                                      },
+                                      label: 'Feed Weight(Kg)',
+                                      prefix: MyFlutterIcon1.glassEel,
+                                    onTap: (){},
+                                    onChanged: (value){},
+                                    onSubmit: (value){
+                                      feedWeightController.text=value;
+                                    },
+                                  ),
+                                  if(cubit.dailyModel!.dailyFeed!>0&&cubit.dailyModel!.feedType!=null)
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  if(cubit.dailyModel!.dailyFeed!>0&&cubit.dailyModel!.feedType!=null)
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.blueGrey[300],
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20)
+                                      )
+                                    ),
+                                    child: IgnorePointer(
+                                      ignoring: true,
+                                      child: myDropDownMenu(
+                                        myDropDownValue: feedName,
+                                          label: 'Select Feed Type',
+                                          borderColor: Colors.black,
+                                          labelColor: Colors.black,
+                                          listName: FishFarmCubit.get(context).feedIdList,
+                                          // objectOFClass: objectOfAllTanksName,
+                                          myDropDownItems: FishFarmCubit.get(context).feedIdList.map(( feed )
+                                          {
+                                            return DropdownMenuItem(
+                                                value: feed,
+                                                child: Row(
+                                                  children: [
+                                                    Text(feed,
+                                                    ),
+                                                  ],
+                                                )
+                                            );
+                                          }).toList(),
+                                          validator: (value)  {
+                                            if (value==null) {
+                                              return 'Feed Type Cant be Empty';
+                                            }
+                                            else
+                                              feedName=value;
+                                          },
+                                          onChange: (value){}),
+                                    ),
+                                  ),
+                                  if(cubit.dailyModel!.dailyFeed!>=0&&cubit.dailyModel!.feedType!=null)
+                                  SizedBox(
+                                    height: 10,
                                   ),
                                   MaterialButton(
                                     onPressed: ()async{
@@ -237,77 +276,33 @@ class EditDaily_Screen extends StatelessWidget {
                                       newDailyFeedWeight=(double.parse(feedWeightController.text)- cubit.dailyModel!.dailyFeed!)+cubit.dailyModel!.dailyFeed!;
                                       newMonthlyFeedWeight=(double.parse(feedWeightController.text)- cubit.dailyModel!.dailyFeed!)+cubit.monthlyModel!.totalFeed!;
                                       newTotalFeedWeight=(double.parse(feedWeightController.text)- cubit.dailyModel!.dailyFeed!)+cubit.tankModel!.totalFeed!;
-                                      print(newDailyMortality);
-                                      print(newDailyFeedWeight);
-                                      cubit.editTankData(
+                                      if(cubit.dailyModel!.dailyMortality!>0&&cubit.dailyModel!.dailyMortality!=null)
+                                      cubit.editMortalityTankData(
                                           tankName: tankName!, day: dateController.text, month: selectedMonth!,
-                                        dailyFeedWeight: newDailyFeedWeight!, dailyMortalityCount: newDailyMortality!,
                                         dailyRemainingPsc: cubit.dailyModel!.remainingPsc!-(int.parse(mortalityController.text)- cubit.dailyModel!.dailyMortality!),
-                                        monthlyMortalityCount: newMonthlyMortality!,monthlyFeedWeight: newMonthlyFeedWeight!,
+                                        dailyMortalityCount: newDailyMortality!, monthlyMortalityCount: newMonthlyMortality!,
                                         monthlyRemainingPsc: cubit.monthlyModel!.pcsRemaining!-(int.parse(mortalityController.text)- cubit.dailyModel!.dailyMortality!),
-                                          totalMortalityCount: newTotalMortality!, totalFeedWeight: newTotalFeedWeight!,
                                         totalRemainingPsc: cubit.tankModel!.remaining!-(int.parse(mortalityController.text)- cubit.dailyModel!.dailyMortality!),
-                                        remainingFeed:cubit.feedTypeModel!.remainingFeed!-(double.parse(feedWeightController.text)- cubit.dailyModel!.dailyFeed!) ,
-                                        feedType: cubit.dailyModel!.feedType!,
+                                        totalMortalityCount: newTotalMortality!,
                                       );
-
+                                      if(cubit.dailyModel!.dailyFeed!>0&&cubit.dailyModel!.feedType!=null)
+                                      cubit.editFeedTankData(
+                                          tankName: tankName!, day: dateController.text, month: selectedMonth!,
+                                          dailyFeedWeight:  newDailyFeedWeight!,feedType:cubit.dailyModel!.feedType!,
+                                          monthlyFeedWeight: newMonthlyFeedWeight!,totalFeedWeight: newTotalFeedWeight!,
+                                        remainingFeed:cubit.feedTypeModel!.remainingFeed!-(double.parse(feedWeightController.text)- cubit.dailyModel!.dailyFeed!),
+                                      );
                                     }
                                    navigateAndFinish(context, Add_Home_Screen());
                                   },child:Text('Edit',
                                     style: TextStyle(fontSize: 20,
                                         fontWeight:FontWeight.bold,color: Colors.white ),),
                                     color:Colors.black , ),
-                                  // defaultButton(
-                                  //   borderColor: Colors.black,
-                                  //     onTap: ()   async {
-                                  //       if(formKey.currentState!.validate())
-                                  //       {
-                                  //         // await  FishFarmCubit.get(context).getDailyReportData(
-                                  //         //     tankName: tankName!,
-                                  //         //     selectedDay: dateController.text);
-                                  //         // // await FishFarmCubit.get(context).getTotalSelectedTankData(tankName: tankName!);
-                                  //         // // await FishFarmCubit.get(context).getMonthlySelectedTankData(tankName: tankName!, selectedMonth: selectedMonth!);
-                                  //         // // await FishFarmCubit.get(context).getDailyReportData(tankName: tankName!, selectedDay: dateController.text);
-                                  //         // // await FishFarmCubit.get(context).getRemainingOfSelectedFeed(feedType: feedName!);
-                                  //         // // await FishFarmCubit.get(context).getRemainingOfSelectedFeed(feedType: feedName!);
-                                  //         // //  FishFarmCubit.get(context).addFeedToTanks(
-                                  //         // //    totalFeed:double.parse(feedWeightController.text)+FishFarmCubit.get(context).tankModel!.totalFeed!,
-                                  //         // //      tankName: tankName!,
-                                  //         // //      datetime: DateTime.now().toString(),
-                                  //         // //      feedName: feedName!,
-                                  //         // //      feedDatetime: dateController.text,
-                                  //         // //      feedWeight: double.parse(feedWeightController.text),
-                                  //         // //     dailyTotalFeed:double.parse(feedWeightController.text)+FishFarmCubit.get(context).dailyModel!.dailyFeed!
-                                  //         // //  );
-                                  //         // //  FishFarmCubit.get(context).addToDailyReport(
-                                  //         // //    dailyMortality:FishFarmCubit.get(context).dailyModel!.dailyMortality ??0,
-                                  //         // //      remainingPsc: FishFarmCubit.get(context).dailyModel!.remainingPsc??0,
-                                  //         // //      tankName: tankName!,
-                                  //         // //      day: dateController.text,
-                                  //         // //    dailyFeed:FishFarmCubit.get(context).dailyModel!.dailyFeed!+double.parse(feedWeightController.text)
-                                  //         // //  );
-                                  //         // //  FishFarmCubit.get(context).addToMonthlyReport(
-                                  //         // //      tankName: tankName!,
-                                  //         // //      month: selectedMonth!,
-                                  //         // //      pcsRemaining: FishFarmCubit.get(context).monthlyModel!.pcsRemaining!,
-                                  //         // //      totalFeed: FishFarmCubit.get(context).monthlyModel!.totalFeed!+double.parse(feedWeightController.text),
-                                  //         // //    totalMortality:  FishFarmCubit.get(context).monthlyModel!.totalMortality!,
-                                  //         // //  );
-                                  //         // //  FishFarmCubit.get(context).updateRemainingFeed(
-                                  //         // //    remainingFeed: FishFarmCubit.get(context).feedTypeModel!.remainingFeed!-double.parse(feedWeightController.text),
-                                  //         // //    feedType: feedName!
-                                  //         // //  );
-                                  //       }
-                                  //     },
-                                  //     buttonName: 'Edit'
-                                  // ),
                                 ],
                               ),
                             ),
                           ),
                         )
-
-
                     ],
                   ),
                 ),

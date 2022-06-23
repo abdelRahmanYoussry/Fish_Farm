@@ -129,15 +129,15 @@ Widget defaultFormText({
         onChanged!(value);
       },
       style: TextStyle(color: textColor,
-          fontSize: 22),
+          fontSize: 18),
       decoration: InputDecoration(
         errorStyle: TextStyle(
-            fontSize: 16,
+            fontSize: 12,
             color: Colors.red),
         fillColor: backgroundColor.withOpacity(0.5),
         filled: true,
         labelText: label,
-        labelStyle: TextStyle(color: labelColor, fontSize: 18),
+        labelStyle: TextStyle(color: labelColor, fontSize: 14),
         prefixIcon: Icon(prefix, color: prefixIconColor,),
         suffixIcon: suffix != null ? IconButton(
           onPressed: () {
@@ -186,7 +186,7 @@ Widget defaultButton({
     },
     child: Text('$buttonName',
         style: TextStyle(
-            fontSize: 30,
+            fontSize: 20,
             color: Colors.white,
             fontWeight: FontWeight.bold
         )),
@@ -194,7 +194,7 @@ Widget defaultButton({
 }
 
 Widget circleDefaultButton({
-  double width = double.infinity,
+  double width = 50,
   Color backGroundColor = Colors.blue,
   Color textColor = Colors.white,
   Color buttonBackGroundColor = Colors.blue,
@@ -208,7 +208,7 @@ Widget circleDefaultButton({
         color: backGroundColor,
         borderRadius: BorderRadius.circular(radius)),
     child: Padding(
-      padding: const EdgeInsets.all(5.0),
+      padding: const EdgeInsets.all(1.0),
       child: Container(
         decoration: BoxDecoration(
             color: buttonBackGroundColor,
@@ -218,7 +218,7 @@ Widget circleDefaultButton({
           child: Text(
             isUpperCase ? text.toUpperCase() : text,
             style: TextStyle(
-                fontSize: 20, color:textColor, fontWeight: FontWeight.bold),
+                fontSize: 16, color:textColor, fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -228,12 +228,13 @@ Widget myDropDownMenu<listName>({
   required String label,
       className,
         listName,
-   objectOFClass,
-  required items,
+   myDropDownValue,
+  required myDropDownItems,
   required validator,
   required Function? onChange,
   Color borderColor = Colors.limeAccent,
-  Color labelColor = Colors.white
+  Color labelColor = Colors.white,
+
 }) {
   return DropdownButtonFormField(
       validator: validator,
@@ -255,7 +256,7 @@ Widget myDropDownMenu<listName>({
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
                 width: 3,color: borderColor
-            )
+            ),
         ),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -275,11 +276,11 @@ Widget myDropDownMenu<listName>({
       iconSize: 30,
       menuMaxHeight: 200,
       focusColor: Colors.limeAccent,
-      value: objectOFClass,
+      value: myDropDownValue,
       onChanged: (value) {
         onChange!(value);
       },
-      items: items);
+      items: myDropDownItems);
 }
 
 Widget myGestureDetectorWithImage(context, {
@@ -372,8 +373,9 @@ Widget newReportContainer({
   context,
   required Function() onTap}) =>
     Container(
-      width: 180,
-      height: 150,
+      padding: const EdgeInsets.only(top: 10, left: 10),
+      width: 100,
+      height: 155,
       decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -393,34 +395,31 @@ Widget newReportContainer({
                 blurRadius: 50,
                 color: Colors.white.withOpacity(0.8))
           ]),
-      child: Container(
-        padding: const EdgeInsets.only(top: 10, left: 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  textField(text: '$title', fontSize: 18),
-                  SizedBox(height: 10,),
-                  textField(text: '$subTitle', fontSize: 14),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: IconButton(iconSize: 40,
-                      color: Colors.amber,
-                      onPressed: () {
-                        onTap();
-                      },
-                      icon: myIcon,),
-                  ),
-                ],),
-            ),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                textField(text: '$title', fontSize: 18),
+                SizedBox(height: 5,),
+                textField(text: '$subTitle', fontSize: 14),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: IconButton(iconSize: 30,
+                    color: Colors.amber,
+                    onPressed: () {
+                      onTap();
+                    },
+                    icon: myIcon,),
+                ),
+              ],),
+          ),
 
-          ],
-        ),
+        ],
       ),
     );
 
@@ -434,8 +433,8 @@ Widget mainWidgetHomeScreen({
         onTap();
       },
       child: Container(
-        width: 160,
-        height: 160,
+        width: 100,
+        height: 150,
         decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -506,8 +505,7 @@ Widget dividerWidget() =>
     );
 
 
-void navigateAndFinish(context, Widget) =>
-    Navigator.pushAndRemoveUntil(context,
+void navigateAndFinish(context, Widget) => Navigator.pushAndRemoveUntil(context,
         MaterialPageRoute(builder: (context) => Widget),
             (route) => false);
 
@@ -560,20 +558,23 @@ Color chooseToastColor(ToastState state) {
 Widget profileCircleAvatar({
   ImageProvider ?imageProvider,
   double radius = 20,
-  double bigRadius = 25,
   Color ?backgroundColor,String ?image}) =>
-    CircleAvatar(
-      radius: radius,
-      backgroundColor: backgroundColor,
-      backgroundImage: imageProvider
-      // NetworkImage(
-      //     image!
-      // ),
+    Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: CircleAvatar(
+        radius: radius,
+        backgroundColor: backgroundColor,
+        backgroundImage: imageProvider
+        // NetworkImage(
+        //     image!
+        // ),
+      ),
     );
 
 Widget defaultAppBar({
   required BuildContext context,
   Color?backGroundColor,
+  Function()? onTap,
   String ?title,
   List<Widget>? actions,
   bool centerTitle=false,
@@ -588,8 +589,7 @@ Widget defaultAppBar({
     icon: Icon(Icons.arrow_back_ios),
     onPressed: (){
       Navigator.pop(context);
-      // navigateAndFinish(context, navigateAndFinishWidget);
-      //  navigateTo(context, widget: navigateToWidget);
+       // navigateTo(context, widget: navigateToWidget);
     },
   ),
   title: Text(

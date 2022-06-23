@@ -2,11 +2,12 @@ class TanksFeedModel{
   late String ?tankName;
   late double ?feedWeight;
   late num ?totalFeed;
-  late int ?totalRemainingFeed;
+  late double ?totalRemainingFeed;
   late String ?userName;
   late String ?feedSize;
   late String ?feedDate;
   late String ?dateTime;
+  late bool ?edit;
   //make a comment
   TanksFeedModel({
     this.tankName,
@@ -16,7 +17,8 @@ class TanksFeedModel{
     this.totalFeed,
     this.dateTime,
     this.feedSize,
-    this.totalRemainingFeed
+    this.totalRemainingFeed,
+    this.edit
     //make a comment
   });
   TanksFeedModel.fromJson(Map<String,dynamic>json){
@@ -28,6 +30,8 @@ class TanksFeedModel{
     dateTime=json['dateTime'];
     totalRemainingFeed=json['totalRemainingFeed'];
     feedSize=json['feedSize'];
+    edit=json['edit'];
+
     //make a comment
 
   }
@@ -41,6 +45,7 @@ class TanksFeedModel{
       'dateTime':dateTime,
       'totalRemainingFeed':totalRemainingFeed,
       'feedSize':feedSize,
+      'edit':edit,
 
     };
 

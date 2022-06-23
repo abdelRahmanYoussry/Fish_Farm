@@ -41,8 +41,7 @@ class DailyReportView extends StatelessWidget {
                     myDropDownMenu(
                         label: 'Select Tank',
                         listName: FishFarmCubit.get(context).tanksIdList,
-                        // objectOFClass: objectOfAllTanksName,
-                        items: FishFarmCubit.get(context).tanksIdList.map(( tank )
+                        myDropDownItems: FishFarmCubit.get(context).tanksIdList.map(( tank )
                         {
                           return DropdownMenuItem(
                               value: tank,
@@ -62,39 +61,6 @@ class DailyReportView extends StatelessWidget {
                           else tankName=value;
                         },
                         onChange: (value){}),
-                    // myDropDownMenu(
-                    //   label:'Tank Num',
-                    //   className: ClassOfAllTanksName,
-                    //   listName: listOfAllTankName,
-                    //   objectOFClass: objectOfAllTanksName,
-                    //   onChange: cubit.functionChangeTankNumMonthlyReport,
-                    //   validator:(value) {
-                    //     if (value == null)
-                    //     {
-                    //       return 'Tank Num Cant be Empty';
-                    //     }
-                    //     else {
-                    //       selectedTankName=value.tankName.toString();
-                    //       print(value.tankName.toString());
-                    //
-                    //     }
-                    //   },
-                    //   items: listOfAllTankName.map((ClassOfAllTanksName tankListNumMonthlyReport )
-                    //   {
-                    //     return DropdownMenuItem<ClassOfAllTanksName>(
-                    //         value: tankListNumMonthlyReport,
-                    //         child: Row(
-                    //           children: [
-                    //             Text(tankListNumMonthlyReport.tankName,
-                    //             ),
-                    //             SizedBox(
-                    //               width:60,
-                    //             ),
-                    //
-                    //           ],
-                    //         )
-                    //     );
-                    //   }).toList(),),
                     SizedBox(
                       height: 30,),
                     defaultFormText(
@@ -151,99 +117,6 @@ class DailyReportView extends StatelessWidget {
                     SizedBox(
                       height:30 ,
                     ),
-                    // if(cubit.userModel!.isAdmin==true)
-                    // defaultButton(
-                    //     buttonName: 'Add',
-                    //     onTap: (){
-                    //
-                    //     }),
-                    // SizedBox(
-                    //   height:30 ,
-                    // ),
-                    // Row(
-                    //   children: [
-                    //     ElevatedButton(
-                    //         style: ButtonStyle(
-                    //
-                    //           backgroundColor: MaterialStateProperty.all(Colors.grey.shade300)
-                    //         ),
-                    //         onPressed:()=>cubit.functionShowButtons(),
-                    //           // cubit.isEnable? print('submit is ok'):print("submit is not ok");
-                    //
-                    //         child: Column(
-                    //           children:
-                    //           [
-                    //           Image.asset('assets/image/report.png',
-                    //           height: 100,width: 100,
-                    //           ),
-                    //             Text('Test',
-                    //               style: TextStyle(
-                    //                 fontSize: 25,color: Colors.black
-                    //               ),)
-                    //         ],)),
-                    //     SizedBox(
-                    //       width: 100,
-                    //     ),
-                    //     ElevatedButton(
-                    //         style: ButtonStyle(
-                    //             backgroundColor: MaterialStateProperty.all(Colors.grey.shade300)
-                    //         ),
-                    //         onPressed: (){},
-                    //         child: Column(
-                    //           children:
-                    //           [
-                    //             Image.asset('assets/image/report.png',
-                    //               height: 100,width: 100,
-                    //             ),
-                    //             Text('Dead EEl',
-                    //               style: TextStyle(
-                    //                   fontSize: 25,color: Colors.black
-                    //               ),)
-                    //           ],)),
-                    //   ],
-                    // ),
-                    // SizedBox(
-                    //   height:60 ,
-                    // ),
-                    // Row(
-                    //   children: [
-                    //     ElevatedButton(
-                    //         style: ButtonStyle(
-                    //             backgroundColor: MaterialStateProperty.all(Colors.grey.shade300)
-                    //         ),
-                    //         onPressed: (){},
-                    //         child: Column(
-                    //           children:
-                    //           [
-                    //             Image.asset('assets/image/report.png',
-                    //               height: 100,width: 100,
-                    //             ),
-                    //             Text('Dead EEl',
-                    //               style: TextStyle(
-                    //                   fontSize: 25,color: Colors.black
-                    //               ),)
-                    //           ],)),
-                    //     SizedBox(
-                    //       width: 100,
-                    //     ),
-                    //     ElevatedButton(
-                    //         style: ButtonStyle(
-                    //             backgroundColor: MaterialStateProperty.all(Colors.grey.shade300)
-                    //         ),
-                    //         onPressed: (){},
-                    //         child: Column(
-                    //           children:
-                    //           [
-                    //             Image.asset('assets/image/report.png',
-                    //               height: 100,width: 100,
-                    //             ),
-                    //             Text('Dead EEl',
-                    //               style: TextStyle(
-                    //                   fontSize: 25,color: Colors.black
-                    //               ),)
-                    //           ],)),
-                    //   ],
-                    // )
                   ],
                 ),
               ),
@@ -304,7 +177,7 @@ Widget bottomSheetBuilder({@required context})=>Padding(
             children: [
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text('Tank Total Weight(Kg) :',style: TextStyle(
+                child: Text('Total Tank Weight(Kg) :',style: TextStyle(
                     color: Colors.white,fontSize: 20
                 ),),
               ),
@@ -326,7 +199,7 @@ Widget bottomSheetBuilder({@required context})=>Padding(
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text(FishFarmCubit.get(context).tankModel!.totalMortality.toString(),style: TextStyle(
+                child: Text(FishFarmCubit.get(context).dailyModel!.dailyMortality.toString(),style: TextStyle(
                     color: Colors.white,fontSize: 20
                 ),),
               ),
@@ -342,7 +215,7 @@ Widget bottomSheetBuilder({@required context})=>Padding(
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text(FishFarmCubit.get(context).tankModel!.remaining.toString(),style: TextStyle(
+                child: Text(FishFarmCubit.get(context).dailyModel!.remainingPsc.toString(),style: TextStyle(
                     color: Colors.white,fontSize: 20
                 ),),
               ),

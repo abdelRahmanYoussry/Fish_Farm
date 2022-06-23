@@ -14,23 +14,17 @@ import '../Modules/Plane_view/planeView.dart';
 import '../Modules/Settings/Settings_Screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  // var formKey=GlobalKey<FormState>();
-  // var nameController=TextEditingController();
-  // var phoneController=TextEditingController();
-  // var emailController=TextEditingController();
   @override
   Widget build(BuildContext context) {
+    var mediaQueryData = MediaQuery.of(context);
     return BlocConsumer<FishFarmCubit, FishFarmStates>(
       listener: (context, state) {
       },
       builder: (context, state) {
+        // FishFarmCubit.get(context).getUserData();
         var profileModel = FishFarmCubit.get(context).userModel;
         var editProfileImage=FishFarmCubit.get(context).profileImageFile;
-        // nameController.text=profileModel!.name!;
-        // phoneController.text=profileModel.phone!;
-        // emailController.text=profileModel.email!;
-        // nameController.text=profileModel!.name!;
-        // phoneController.text=profileModel.phone!;
+        // FishFarmCubit.get(context).getUserData();
         return ConditionalBuilder(
           condition: profileModel != null,
           fallback: (context) =>
@@ -38,270 +32,232 @@ class HomeScreen extends StatelessWidget {
                 color: defaultColor,
               ),
           builder: (context) =>
-              Scaffold(
-                  extendBodyBehindAppBar: true,
-                  appBar: AppBar(
-                    actions: [
-                      InkWell(
-                        child: profileCircleAvatar(
-                            imageProvider:NetworkImage('${profileModel!.image}'),
-                            radius: 30,
-                            backgroundColor: Colors.yellowAccent,
-                        ),
-                        onTap: () {
-                          // nameController.text=profileModel.name!;
-                          // phoneController.text=profileModel.phone!;
-                          // emailController.text=profileModel.email!;
-                          showDialog(
-                            useSafeArea:true ,
-                              context: context,
-                              builder: (context)=>SimpleDialog(
-                                elevation: 0.8,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.horizontal(
-                                      left: Radius.circular(20),
-                                      right: Radius.circular(20),
-                                    )
-                                ),
-                                title: Center(child: Text('Profile Info',style: TextStyle(
-                                  fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  color: Colors.white
-                                ),)),
-                                backgroundColor: Colors.transparent,
-                                children: [
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      profileCircleAvatar(
-                                          radius: 40,
-                                          imageProvider:
-                                          editProfileImage== null? NetworkImage(
-                                              '${profileModel.image}'):FileImage(editProfileImage )as ImageProvider  ,
-                                          backgroundColor: Colors.yellowAccent,
-
-                                          ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text('${profileModel.name}',
-                                          style:TextStyle(
-                                            color: Colors.white,
-                                              fontSize: 24,fontWeight: FontWeight.bold
-                                          ) ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text('${profileModel.phone}',
-                                          style:TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 24,fontWeight: FontWeight.bold
-                                          ) ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text('${profileModel.email}',
-                                          style:TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 24,fontWeight: FontWeight.bold
-                                          ) ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-
-                                      circleDefaultButton(
-                                        textColor: Colors.black,
-                                          buttonBackGroundColor:Colors.white ,
-                                          radius: 20,
-                                          width: 160,
-                                          backGroundColor: Colors.white,
-                                          onTap: () {
-                                           Navigator.pop(context);
-                                            navigateTo(context, widget: EditProfile_Screen()) ;
-
-                                            },
-                                          text: 'Edit'
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      circleDefaultButton(
-                                          textColor: Colors.black,
-                                          buttonBackGroundColor:Colors.white ,
-                                          radius: 20,
-                                          width: 160,
-                                          backGroundColor: Colors.white,
-                                          onTap: () {
-                                            FishFarmCubit.get(context).loginOut(context);  },
-                                          text: 'Log Out'
-                                      ),
-
-                                    ],
+              WillPopScope(
+                onWillPop:()=> _onWillPop(context),
+                child: Scaffold(
+                  backgroundColor: Colors.cyan,
+                    extendBodyBehindAppBar: true,
+                    appBar: AppBar(
+                      actions: [
+                        InkWell(
+                          child: profileCircleAvatar(
+                              imageProvider:NetworkImage('${profileModel!.image}'),
+                              radius: 25,
+                              backgroundColor: Colors.yellowAccent,
+                          ),
+                          onTap: () {
+                            showDialog(
+                              useSafeArea:true ,
+                                context: context,
+                                builder: (context)=>SimpleDialog(
+                                  elevation: 0.8,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.horizontal(
+                                        left: Radius.circular(20),
+                                        right: Radius.circular(20),
+                                      )
                                   ),
-                                ],
-                              ));
-                        },
-                      )
-                    ],
-                    elevation: 0.00,
-                    backgroundColor: Colors.transparent,
-                  ),
-                  body: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage('assets/image/EelTank.png'),
-                            fit: BoxFit.cover
+                                  title: Center(child: Text('Profile Info',style: TextStyle(
+                                    fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    color: Colors.white
+                                  ),)),
+                                  backgroundColor: Colors.transparent,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        profileCircleAvatar(
+                                            radius: 40,
+                                            imageProvider:
+                                            editProfileImage== null? NetworkImage(
+                                                '${profileModel.image}'):FileImage(editProfileImage )as ImageProvider  ,
+                                            backgroundColor: Colors.yellowAccent,
+                                            ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text('${profileModel.name}',
+                                            style:TextStyle(
+                                              color: Colors.white,
+                                                fontSize: 16,fontWeight: FontWeight.bold
+                                            ) ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text('${profileModel.phone}',
+                                            style:TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,fontWeight: FontWeight.bold
+                                            ) ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text('${profileModel.email}',
+                                            style:TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,fontWeight: FontWeight.bold
+                                            ) ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+
+                                        circleDefaultButton(
+                                          textColor: Colors.white,
+                                            buttonBackGroundColor:defaultColor ,
+                                            radius: 30,
+                                            width: 100,
+                                            backGroundColor: Colors.white,
+                                            onTap: () {
+                                             Navigator.pop(context);
+                                              navigateTo(context, widget: EditProfile_Screen()) ;
+
+                                              },
+                                            text: 'Edit'
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        circleDefaultButton(
+                                            textColor: Colors.white,
+                                            buttonBackGroundColor:Colors.red ,
+                                            radius: 20,
+                                            width: 100,
+                                            backGroundColor: Colors.white,
+                                            onTap: () {
+                                              FishFarmCubit.get(context).loginOut(context);
+                                              },
+                                            text: 'Log Out'
+                                        ),
+
+                                      ],
+                                    ),
+                                  ],
+                                ));
+                          },
                         )
+                      ],
+                      elevation: 0.00,
+                      backgroundColor: Colors.transparent,
                     ),
-                    child: ListView(
+                    body: ListView(
                       children: [
                         Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            SizedBox(
-                              width: double.infinity,
-                              height: 20
-                              ,
-                            ),
                             Container(
-                              width: 500, height: 100,
+                              width: mediaQueryData.size.width/1.7, height: mediaQueryData.size.height/6,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                     image: AssetImage('assets/image/logo.png')
                                 ),
                               ),
                             ),
-                            Text('Eel Farm',
-                              style: TextStyle(color: Colors.yellowAccent,
-                                  fontSize: 20),),
                             Padding(
                               padding: const EdgeInsets.only(
-                                  top: 30
-                                  , left: 10),
+                                  top: 20
+                                  , left: 20,right: 20),
                               child: Row(
                                 children: [
-                                  mainWidgetHomeScreen(
-                                      imageName: 'assets/image/report.svg',
-                                      title: 'Reports',
-                                      onTap: (){
-                                        navigateTo(context, widget: ReportScreen());
-                                        FishFarmCubit.get(context).getAllTankData();
-                                        FishFarmCubit.get(context).getAllFeedTypesData();
-                                      }),
+                                  Expanded(
+                                    child: mainWidgetHomeScreen(
+                                        imageName: 'assets/image/report.svg',
+                                        title: 'Reports',
+                                        onTap: (){
+                                          navigateTo(context, widget: ReportScreen());
+                                          FishFarmCubit.get(context).getAllTankData();
+                                          FishFarmCubit.get(context).getAllFeedTypesData();
+                                        }),
+                                  ),
                                   SizedBox(
                                       width: 70
                                   ),
-                                mainWidgetHomeScreen(
-                                    imageName: 'assets/image/airCreaft.svg',
-                                    title: 'plane View',
-                                    onTap: (){
-                                  navigateTo(context, widget: PlaneViewScreen());
-                                })
-                              //     InkWell(
-                              //   onTap: (){
-                              //   },
-                              //   child: Container(
-                              //     width: 160,
-                              //     height: 160,
-                              //     decoration: BoxDecoration(
-                              //       gradient: LinearGradient(
-                              //         colors: [
-                              //           Colors.white.withOpacity(0.1),
-                              //           Colors.white.withOpacity(0.1)
-                              //           // Colors.blue.shade200
-                              //         ],),
-                              //       borderRadius: BorderRadius.only(
-                              //         topLeft: Radius.circular(10),
-                              //         bottomLeft: Radius.circular(10),
-                              //         bottomRight: Radius.circular(10),
-                              //         topRight: Radius.circular(10),
-                              //       ),
-                              //       boxShadow: [
-                              //         BoxShadow(
-                              //             offset: Offset(5, 5),
-                              //             blurRadius: 50,
-                              //             color: Colors.white.withOpacity(0.0))
-                              //       ],
-                              //     ),
-                              //     child: Padding(
-                              //       padding: const EdgeInsets.all(0.0),
-                              //       child: Column(
-                              //         mainAxisSize: MainAxisSize.max,
-                              //         children: [
-                              //           textField(text: 'Plane View', fontSize: 18,color: Colors.white),
-                              //          Icon(Icons.airplanemode_on,color: Colors.white,size: 130,)
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // )
-                                  // newReportContainer(
-                                  //     title: 'Plane View',
-                                  //     subTitle: 'All Tanks Quantity , Weight and more... ',
-                                  //     myIcon: Icon(Icons.airplanemode_active),
-                                  //     onTap: () {
-                                  //       navigateTo(
-                                  //           context, widget: PlaneViewScreen());
-                                  //     })
+                                Expanded(
+                                  child: mainWidgetHomeScreen(
+                                      imageName: 'assets/image/airCreaft.svg',
+                                      title: 'plane View',
+                                      onTap: (){
+                                    navigateTo(context, widget: PlaneViewScreen());
+                                  }),
+                                )
                                 ],
                               ),
-                            ),
-                            SizedBox(
-                                width: double.infinity,
-                                height: 30
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                  top: 30
-                                  , left: 10),
+                                  top: 20
+                                  , left: 20,right: 20,bottom: 20),
                               child: Row(
                                 children: [
-                                  newReportContainer(
-                                      onTap: () {},
-                                      context: context,
-                                      myIcon: Icon(Icons.compare_arrows),
-                                      subTitle: 'Photos , Videos and more... ',
-                                      title: 'Project Life Time'
+                                  Expanded(
+                                    child: newReportContainer(
+                                        onTap: () {
+                                          FishFarmCubit.get(context).getUserAdmin();
+                                        },
+                                        context: context,
+                                        myIcon: Icon(Icons.compare_arrows),
+                                        subTitle: 'Photos , Videos and more... ',
+                                        title: 'About Us'
+                                    ),
                                   ),
                                   SizedBox(
-                                      width: 30
+                                      width: 70
                                   ),
-                                  newReportContainer(
-                                      title: 'contact us',
-                                      subTitle: 'Your Feedback Is very Important to us ',
-                                      myIcon: Icon(Icons.contact_mail),
-                                      onTap: () {})
+                                  Expanded(
+                                    child: newReportContainer(
+                                        title: 'contact us',
+                                        subTitle: 'Your Feedback Is very Important to us ',
+                                        myIcon: Icon(Icons.contact_mail),
+                                        onTap: () {}),
+                                  )
                                 ],
 
 
                               ),
                             ),
-                            SizedBox(
-                                width: double.infinity,
-                                height: 30
-                            ),
                             if(profileModel.isAdmin==true)
-                            newReportContainer(
-                                onTap: () {
-                                  navigateTo(context, widget: Add_Home_Screen());
-                                },
-                                context: context,
-                                myIcon: Icon(Icons.add),
-                                subTitle: 'Add Tank,Mortality, Feed and More',
-                                title: 'Add(only Admins)'
+                            Flexible(
+                              fit: FlexFit.loose,
+                              child: newReportContainer(
+                                  onTap: () {
+                                    navigateTo(context, widget: Add_Home_Screen());
+                                  },
+                                  context: context,
+                                  myIcon: Icon(Icons.add),
+                                  subTitle: 'Add Tank,Feed,Mortality,and More',
+                                  title: 'Add(only Admins)'
+                              ),
                             ),
                           ],
                         ),
                       ],
-                    ),
-                  )
+                    )
 
+                ),
               ),
         );
       },
     );
   }
+  Future<bool> _onWillPop(context) async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text('Are you sure?'),
+        content: new Text('Do you want to exit an App'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: new Text('Yes'),
+          ),
+        ],
+      ),
+    )) ?? false;
+  }
+
 }
 
 

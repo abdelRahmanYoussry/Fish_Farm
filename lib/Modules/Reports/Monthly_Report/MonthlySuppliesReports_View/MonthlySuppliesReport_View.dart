@@ -30,7 +30,7 @@ class MonthlySuppliesReportView extends StatelessWidget {
                     label:'Please Select Tank',
                     className: ClassOfAllTanksName,
                     listName: listOfAllTankName,
-                    objectOFClass: objectOfAllTanksName,
+                    myDropDownValue: objectOfAllTanksName,
                     onChange: cubit.functionChangeTankNumMonthlyReport,
                     validator:(value) {
                       if (value == null) {
@@ -38,7 +38,7 @@ class MonthlySuppliesReportView extends StatelessWidget {
                       }
                       else return null;
                     },
-                    items: listOfAllTankName.map((ClassOfAllTanksName tankListNumMonthlyReport )
+                    myDropDownItems: listOfAllTankName.map((ClassOfAllTanksName tankListNumMonthlyReport )
                     {
                       return DropdownMenuItem<ClassOfAllTanksName>(
                           value: tankListNumMonthlyReport,
@@ -60,13 +60,13 @@ class MonthlySuppliesReportView extends StatelessWidget {
                     label: 'Oxygen , Generator , Water ',
                     className: SuppliesClass,
                     listName: suppliesList,
-                    objectOFClass: suppliesSelectedUser,
+                    myDropDownValue: suppliesSelectedUser,
                     validator: (value){
                       if(value==null)
                       { return'supply Cant be Empty';}
                       else return null;},
                     onChange: cubit.functionChangeSupplyMonthlyReport,
-                    items: suppliesList.map((SuppliesClass suppliesList ) {
+                    myDropDownItems: suppliesList.map((SuppliesClass suppliesList ) {
                       return DropdownMenuItem<SuppliesClass>(
                           value: suppliesList,
                           child: Row(

@@ -3,21 +3,19 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart'as firebase_storage;
 import 'package:fish_farm/Models/DailyModel.dart';
 import 'package:fish_farm/Models/MortalityTankModel.dart';
 import 'package:fish_farm/Models/ProfileModel.dart';
 import 'package:fish_farm/Modules/Login&Register/login/fishFarm_login.dart';
-import 'package:fish_farm/Modules/Reports/Monthly_Report/Monthly_Reports_Layout.dart';
-import 'package:fish_farm/Modules/Reports/Daily_Report/dailyRepotrs_view.dart';
-import 'package:fish_farm/Modules/Reports/Stock_Report/StockReports.dart';
+import 'package:fish_farm/Modules/Reports/Monthly_Report/Monthly_Eel_Report/monthlyEelReport_view/monthlyEelReport_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../Models/FeedTypeModel.dart';
 import '../../Models/MonthlyModel.dart';
-import '../../Models/MortalityModel.dart';
 import '../../Models/TanksFeedModel.dart';
 import '../../Models/TankModel.dart';
 import '../Componets/components.dart';
@@ -74,20 +72,21 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     }
   }
 
-  void getUserData()
-  {
+ Future <void> getUserData()
+  async {
     emit(GetUserDataLoadingState());
-    FirebaseFirestore.instance
+  await  FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .get()
         .then((value) {
       userModel = FishFarmUserModel.fromJson(value.data()!);
+      print(userModel!.email!+'emailllllllllllllllllllllllllllllllllllllllll');
       emit(GetUserDataSuccessState());
     })
         .catchError((error) {
-      print(error);
-      emit(GetUserDataErrorState(error));
+      print(error.toString());
+      emit(GetUserDataErrorState(error.toString()));
     });
   }
 
@@ -97,8 +96,11 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     // await FirebaseFirestore.instance.clearPersistence();
     await FirebaseAuth.instance.signOut().then((value) {
       CashHelper.removeData(key: 'uid').then((value) {
-        if (value)
-          navigateAndFinish(context, FishFarmLogin());
+        if (value){
+           userModel=null;
+          navigateAndFinish(context, FishFarmLoginScreen());
+        }
+
       });
 
       emit(FishFarmLogoutSuccessState());
@@ -112,10 +114,12 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     required String name,
     required String phone,
     required String email,
+    required bool isAdmin,
     String ?image,
   }) {
     // emit(UpdateUserDataLoadingState());
     FishFarmUserModel modelMap = FishFarmUserModel(
+      isAdmin: isAdmin,
       name: name,
       phone: phone,
       image: image ?? userModel!.image,
@@ -128,11 +132,25 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
         .update(modelMap.toMap())
         .then((value) {
       getUserData();
+
       // emit(UpdateUserDataSuccessState());
     })
         .catchError((error) {
       emit(UpdateUserDataErrorState(error.toString()));
     });
+  }
+
+  bool? isAdmin;
+  void getUserAdmin(){
+    FirebaseFirestore.instance
+    .collection('users')
+    .doc(userModel!.uid)
+    .get()
+    .then((value) {
+      isAdmin=value.data()!['isAdmin'];
+      print(isAdmin);
+    })
+    .catchError((error){});
   }
 
   File? profileImageFile;
@@ -154,6 +172,7 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     required String name,
     required String phone,
     required String email,
+    required bool isAdmin,
   }) {
     emit(UpdateUserDataLoadingState());
     firebase_storage.FirebaseStorage.instance.ref()
@@ -163,8 +182,7 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
         .putFile(profileImageFile!).then((value) {
       value.ref.getDownloadURL().then((value) {
         print(value);
-        updateUser(name: name, phone: phone, email: email,
-          image: value,);
+        updateUser(name: name, phone: phone, email: email, isAdmin: isAdmin,image: value,);
         emit(FishFarmUpdateUserProfileImageSuccessState());
       }).catchError((error) {
         emit(FishFarmUpdateUserProfileImageErrorState(error.toString()));
@@ -250,6 +268,7 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
       mortalityDate: mortalityDatetime,
       tankName: tankName,
       userName: userModel!.name,
+      edit: false,
     );
     emit(AddTanksMortalityLoadingState());
     FirebaseFirestore.instance.collection('Tanks')
@@ -262,12 +281,8 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
       //update total mortality in tanks collection
       FirebaseFirestore.instance.collection('Tanks')
           .doc(tankName)
-          .update({'totalMortality': totalTankMortality});
-      //update total remaining in tanks collection
-      FirebaseFirestore.instance.collection('Tanks')
-          .doc(tankName)
-          .update({'remaining': remaining});
-      //update daily mortality in tanks collection and mortality collection
+          .update({'totalMortality': totalTankMortality,'remaining': remaining});
+      //update daily mortality in tanks collection
       FirebaseFirestore.instance.collection('Tanks')
           .doc(tankName)
           .collection('Mortality')
@@ -324,6 +339,7 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
 
   List<FeedTypeModel>allCreateFeedModelList = [];
   List<String>feedIdList = [];
+
   void getAllFeedTypesData() {
     emit(GetAllFeedTypeDataLoadingState());
     FirebaseFirestore.instance.collection('Feed')
@@ -352,17 +368,18 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     required double feedWeight,
     num? totalFeed,
     num? dailyTotalFeed,
-    int? remaining,
+    double? remainingFeedType,
   }) {
     TanksFeedModel feedModel = TanksFeedModel(
       feedWeight: feedWeight.toDouble(),
       feedDate: feedDatetime,
       feedSize: feedName,
-      totalRemainingFeed: remaining,
+      totalRemainingFeed: remainingFeedType,
       totalFeed: totalFeed,
       dateTime: datetime,
       tankName: tankName,
       userName: userModel!.name,
+      edit: false,
     );
     emit(AddFeedLoadingState());
     FirebaseFirestore.instance.collection('Tanks')
@@ -414,13 +431,14 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
   .doc('Daily')
   .set(dailyModel.toMap())
   .then((value) {
+    //Add Daily inside Monthly Collection
     FirebaseFirestore.instance
         .collection('MonthlyReport')
         .doc(month)
         .collection(tankName)
         .doc('Monthly')
-        .collection(day)
-        .doc('Daily')
+        .collection('Daily')
+        .doc(day)
         .set(dailyModel.toMap())
         .then((value) {
       emit(AddToMonthlyReportSuccessState());
@@ -452,7 +470,8 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
                 day: selectedDay,
                 tankName: tankName,
               dailyMortality: 0,
-              remainingPsc: tankModel!.remaining
+              remainingPsc: tankModel!.remaining,
+          feedType: 'No Feed',
             );
           }  else
              dailyModel= DailyModel.fromJson(value.data()!);
@@ -490,33 +509,6 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     });
   }
 
-  // // num ?tankDailyFeed;
-  // Future <void> getTanksDailyFeed({
-  //   required String tankName,
-  //   required String selectedDay,
-  // }) async {
-  //   emit(GetDailyTankLoadingState());
-  //   await FirebaseFirestore.instance.collection('Tanks')
-  //       .doc(tankName)
-  //       .collection('Feed')
-  //       .doc(selectedDay)
-  //       .get()
-  //       .then((value) {
-  //     tankDailyFeed=0;
-  //     if(value.data()==null){
-  //       tankDailyFeed=0;
-  //     }
-  //     tankDailyFeed=value.data()!['TotalFeedDaily'];
-  //     print(tankDailyFeed);
-  //     emit(GetDailyTankSuccessState());
-  //   })
-  //       .catchError((error) {
-  //     print(error.toString());
-  //     emit(GetDailyTankErrorState(error.toString()));
-  //   });
-  // }
-
-
   Future <void> getMonthlySelectedTankData({
     required String tankName,
     required String selectedMonth,
@@ -540,6 +532,7 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
               );
             }
           monthlyModel=MonthlyModel.fromJson(value.data()!);
+
       emit(GetMonthlyTankSuccessState());
     })
         .catchError((error) {
@@ -548,7 +541,112 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     });
   }
 
-// int monthlyMortality=0;
+  List<DailyModel>dailyList=[];
+  List<TableRow> rows = <TableRow>[];
+  // List<TableRow> rows = <TableRow>[
+  //   new TableRow(
+  //     children: <Widget>[
+  //       Padding(
+  //         padding: const EdgeInsets.all(1.0),
+  //         child: Text('Date'
+  //             ,style:TextStyle(fontSize: 20) ,textAlign: TextAlign.center),
+  //       ),
+  //       Padding(
+  //         padding: const EdgeInsets.all(1.0),
+  //         child: Text('Mor'
+  //             ,style:TextStyle(fontSize: 20) ,textAlign: TextAlign.center),
+  //       ),
+  //       Padding(
+  //         padding: const EdgeInsets.all(1.0),
+  //         child: Text('Rem'
+  //             ,style:TextStyle(fontSize: 20) ,textAlign: TextAlign.center),
+  //       ),
+  //       Padding(
+  //         padding: const EdgeInsets.all(1.0),
+  //         child: Text('F.Weight(Kg)'
+  //             ,style:TextStyle(fontSize: 20) ,textAlign: TextAlign.center),
+  //       ),
+  //       Padding(
+  //         padding: const EdgeInsets.all(1.0),
+  //         child: Text('F.Type'
+  //             ,style:TextStyle(fontSize: 20) ,textAlign: TextAlign.center),
+  //       ),
+  //     ],
+  //   ),
+  // ];
+  //
+  late TableRow row;
+
+  Future <void> getMonthDataByDays({
+    required String tankName,
+    required String selectedMonth,
+  }) async {
+    emit(GetMonthlyDataByDaysLoadingState());
+   await  FirebaseFirestore.instance
+        .collection('MonthlyReport')
+        .doc(selectedMonth)
+        .collection(tankName)
+        .doc('Monthly')
+        .collection('Daily')
+        .get()
+        .then((value) {
+          dailyList.clear();
+          value.docs.forEach((element) {
+         dailyList.add(DailyModel.fromJson(element.data()));
+
+          });
+          print(dailyList.length);
+          dailyList.forEach((element) {
+            print(element.day);
+           // rows.add(row);
+         // dailyModel!.feedType=element.feedType;
+         // dailyModel!.dailyFeed=element.dailyFeed;
+         // dailyModel!.remainingPsc=element.remainingPsc;
+         // dailyModel!.dailyMortality=element.dailyMortality;
+         // dailyModel!.day=element.day;
+            // TableRow row=new TableRow(
+            //     children: [
+            //       Padding(
+            //         padding: const EdgeInsets.all(1.0),
+            //         child: Text(element.day!
+            //             ,style:TextStyle(fontSize: 18) ,textAlign: TextAlign.center),
+            //       ),
+            //       Padding(
+            //         padding: const EdgeInsets.all(1.0),
+            //         child: Text(element.dailyMortality.toString()
+            //             ,style:TextStyle(fontSize: 20) ,textAlign: TextAlign.center),
+            //       ),
+            //       Padding(
+            //         padding: const EdgeInsets.all(1.0),
+            //         child: Text(element.remainingPsc.toString()
+            //             ,style:TextStyle(fontSize: 20) ,textAlign: TextAlign.center),
+            //       ),
+            //       Padding(
+            //         padding: const EdgeInsets.all(1.0),
+            //         child: Text(element.dailyFeed.toString()
+            //             ,style:TextStyle(fontSize: 20) ,textAlign: TextAlign.center),
+            //       ),
+            //       Padding(
+            //         padding: const EdgeInsets.all(1.0),
+            //         child: Text(element.feedType??'null'
+            //             ,style:TextStyle(fontSize: 15) ,textAlign: TextAlign.left),
+            //       ),
+            //     ]
+            // );
+            // intRows.add(
+            //     row
+            // );
+          }
+          );
+          emit(GetMonthlyDataByDaysSuccessState());
+    }).catchError((error){
+      emit(GetMonthlyDataByDaysErrorState(error.toString()));
+     });
+
+  }
+
+
+
   void addToMonthlyReport({
     required String tankName,
     required String month,
@@ -572,32 +670,14 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
         .doc('Monthly')
         .set(monthlyModel.toMap())
         .then((value) {
-
-      //make this in uique method
-      // FirebaseFirestore.instance
-      //     .collection('MonthlyReport')
-      //     .doc(month)
-      //     .collection(tankName)
-      //     .doc('Monthly')
-      //     .get()
-      //     .then((value) {
-      //       monthlyMortality=0;
-      //       // print(value.data().toString());
-      //       monthlyMortality=value.data()!['totalMortality']??0;
-      //       print(monthlyMortality);
-      // })
-      //     .catchError((error){
-      //   emit(AddToMonthlyReportErrorState(error));
-      // });
       emit(AddToMonthlyReportSuccessState());
     }).catchError((error){
       emit(AddToMonthlyReportErrorState(error.toString()));
     });
   }
 
-    Future <void> getRemainingOfSelectedFeed({
-      required String feedType }) async
-    {
+    Future <void> getRemainingOfSelectedFeed({required String feedType })
+    async {
     emit(GetFeedTypeDataLoadingState());
   await  FirebaseFirestore.instance
         .collection('Feed')
@@ -652,30 +732,77 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     
 }
 
- void editTankData({
+
+  String ?stringMortalityId;
+  Future <void> getIdDailyMortality({required String tankName,required String day}) async
+  {
+    emit(GetIdDailyMortalityLoadingState());
+    await FirebaseFirestore.instance.collection('Tanks')
+        .doc(tankName)
+         .collection('Mortality')
+         .doc(day)
+         .collection(userModel!.name!)
+        .get()
+        .then((value) {
+          value.docs.forEach((element) {
+            stringMortalityId=element.id;
+            print(stringMortalityId);
+          }
+          );
+      emit(GetIdDailyMortalitySuccessState());
+    })
+        .catchError((error) {
+      emit(GetIdDailyMortalityErrorState(error.toString()));
+    });
+  }
+
+
+
+  String ?stringFeedId;
+  Future <void> getIdDailyFeed({required String tankName,required String day}) async
+  {
+    emit(GetIdDailyFeedLoadingState());
+    await FirebaseFirestore.instance.collection('Tanks')
+        .doc(tankName)
+        .collection('Feed')
+        .doc(day)
+        .collection(userModel!.name!)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        stringFeedId=element.id;
+        print(stringFeedId);
+      }
+      );
+      emit(GetIdDailyMortalitySuccessState());
+    })
+        .catchError((error) {
+      emit(GetIdDailyMortalityErrorState(error.toString()));
+    });
+  }
+
+
+
+
+  void editMortalityTankData({
    required String tankName,
    required String day,
    required String month,
-   required String feedType,
-   required num dailyFeedWeight,
    required int dailyMortalityCount,
    required int dailyRemainingPsc,
-   required num monthlyFeedWeight,
    required int monthlyMortalityCount,
    required int monthlyRemainingPsc,
    required int totalMortalityCount,
-   required num totalFeedWeight,
    required int totalRemainingPsc,
-   required num remainingFeed,
  }){
-    emit(EditTanksDataLoadingState());
+    emit(EditMortalityDataLoadingState());
     //1 Edit DailyReport Collection
     FirebaseFirestore.instance
     .collection('DailyReport')
     .doc(day)
     .collection(tankName)
     .doc('Daily')
-    .update({'dailyMortality':dailyMortalityCount,'dailyFeed':dailyFeedWeight,'remainingPsc':dailyRemainingPsc})
+    .update({'dailyMortality':dailyMortalityCount,'remainingPsc':dailyRemainingPsc})
     .then((value) {
       //2 Edit MonthlyReport Collection
       FirebaseFirestore.instance
@@ -683,60 +810,116 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
       .doc(month)
       .collection(tankName)
       .doc('Monthly')
-      .update({'totalMortality':monthlyMortalityCount,'totalFeed':monthlyFeedWeight,'pcsRemaining':monthlyRemainingPsc});
-      //3 Edit Tanks Collection Total & Daily
+      .update({'totalMortality':monthlyMortalityCount,'pcsRemaining':monthlyRemainingPsc});
+      //3 Edit Tanks Collection Total & Daily & Daily Details
+      //A)Total
       FirebaseFirestore.instance
       .collection('Tanks')
       .doc(tankName)
-      .update({'totalMortality':totalMortalityCount,'totalFeed':totalFeedWeight,'remaining':totalRemainingPsc});
+      .update({'totalMortality':totalMortalityCount,'remaining':totalRemainingPsc});
+      //B) Daily inside Tanks collection
       FirebaseFirestore.instance
           .collection('Tanks')
           .doc(tankName)
           .collection('Mortality')
           .doc(day)
           .update({'TotalDayMortality':dailyMortalityCount});
+      //C) Edit in Mortality Add process
       FirebaseFirestore.instance
           .collection('Tanks')
           .doc(tankName)
-          .collection('Feed')
+          .collection('Mortality')
           .doc(day)
-          .update({'TotalFeedDaily':dailyFeedWeight});
-      //edit Remaining feed
-      FirebaseFirestore.instance
-      .collection('Feed')
-      .doc(feedType)
-      .update({'remainingFeed':remainingFeed});
+          .collection(userModel!.name!)
+          .doc(stringMortalityId)
+          .update({'mortalityCount':dailyMortalityCount,'totalMortality':totalMortalityCount,'remaining':dailyRemainingPsc,'edit':true});
       //edit in daily inside monthly collection
       FirebaseFirestore.instance
       .collection('MonthlyReport')
       .doc(month)
       .collection(tankName)
       .doc('Monthly')
-      .collection(day)
-      .doc('Daily')
-      .update({'dailyMortality':dailyMortalityCount,'dailyFeed':dailyFeedWeight,'remainingPsc':dailyRemainingPsc});
-      emit(EditTanksDataSuccessState());
+      .collection('Daily')
+      .doc(day)
+      .update({'dailyMortality':dailyMortalityCount,'remainingPsc':dailyRemainingPsc});
+      emit(EditMortalityDataSuccessState());
 
     })
     .catchError((error){
-      emit(EditTanksDataErrorState(error));
+      emit(EditMortalityDataErrorState(error));
     });
     
  }
 
- // Future <void> getRemaining({
- //  required  String tankName,})async{
- //   FirebaseFirestore.instance
- //   .collection('Tanks')
- //   .doc(tankName)
- //   .get()
- //   .then((value) {
- //     print(value.data()!['remaining']);
- //     //tankModel=TankModel.fromJson(value.data()!);
- //   })
- //   .catchError((error){});
- //
- //
- // }
+
+  void editFeedTankData({
+    required String tankName,
+    required String day,
+    required String month,
+    required String feedType,
+    required num dailyFeedWeight,
+    required num monthlyFeedWeight,
+    required num totalFeedWeight,
+    required num remainingFeed ,
+  }){
+    emit(EditFeedDataLoadingState());
+    //1 Edit DailyReport Collection
+    FirebaseFirestore.instance
+        .collection('DailyReport')
+        .doc(day)
+        .collection(tankName)
+        .doc('Daily')
+        .update({'dailyFeed':dailyFeedWeight})
+        .then((value) {
+      //2 Edit MonthlyReport Collection
+      FirebaseFirestore.instance
+          .collection('MonthlyReport')
+          .doc(month)
+          .collection(tankName)
+          .doc('Monthly')
+          .update({'totalFeed':monthlyFeedWeight});
+      //3 Edit Tanks Collection Total & Daily
+      FirebaseFirestore.instance
+          .collection('Tanks')
+          .doc(tankName)
+          .update({'totalFeed':totalFeedWeight});
+        FirebaseFirestore.instance
+            .collection('Tanks')
+            .doc(tankName)
+            .collection('Feed')
+            .doc(day)
+            .update({'TotalFeedDaily':dailyFeedWeight});
+      //C) Edit in Mortality Add process
+      FirebaseFirestore.instance
+          .collection('Tanks')
+          .doc(tankName)
+          .collection('Feed')
+          .doc(day)
+          .collection(userModel!.name!)
+          .doc(stringFeedId)
+          .update({'feedWeight':dailyFeedWeight,'totalFeed':totalFeedWeight,'edit':true});
+      //edit Remaining feed
+        FirebaseFirestore.instance
+            .collection('Feed')
+            .doc(feedType)
+            .update({'remainingFeed':remainingFeed});
+      //edit in daily inside monthly collection
+      FirebaseFirestore.instance
+          .collection('MonthlyReport')
+          .doc(month)
+          .collection(tankName)
+          .doc('Monthly')
+          .collection('Daily')
+          .doc(day)
+          .update({'dailyFeed':dailyFeedWeight});
+      emit(EditFeedDataSuccessState());
+    })
+        .catchError((error){
+      emit(EditFeedDataErrorState(error));
+    });
+
+  }
+
+
 
 }
