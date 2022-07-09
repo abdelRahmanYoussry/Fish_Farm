@@ -167,12 +167,14 @@ Widget defaultFormText({
 Widget defaultButton({
   Color backgroundColor = Colors.blueGrey,
   Color borderColor = Colors.limeAccent,
+  Color textColor = Colors.white,
+  double padding = 20.0,
   required String buttonName,
   required Function() ? onTap,}) {
   return OutlinedButton(
     style: OutlinedButton.styleFrom(
       backgroundColor: backgroundColor.withOpacity(0.8),
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(padding),
       side: BorderSide(
           style: BorderStyle.solid,
           color: borderColor,
@@ -187,7 +189,7 @@ Widget defaultButton({
     child: Text('$buttonName',
         style: TextStyle(
             fontSize: 20,
-            color: Colors.white,
+            color:textColor,
             fontWeight: FontWeight.bold
         )),
   );
@@ -230,57 +232,61 @@ Widget myDropDownMenu<listName>({
         listName,
    myDropDownValue,
   required myDropDownItems,
+   double height=60,
   required validator,
   required Function? onChange,
   Color borderColor = Colors.limeAccent,
   Color labelColor = Colors.white,
 
 }) {
-  return DropdownButtonFormField(
-      validator: validator,
-      decoration: InputDecoration(
-        errorStyle:  TextStyle(
+  return Container(
+    height:height,width: double.infinity,
+    child: DropdownButtonFormField(
+        validator: validator,
+        decoration: InputDecoration(
+          errorStyle:  TextStyle(
+              fontSize: 12,
+              color: Colors.red),
+          labelText: label,
+          labelStyle: TextStyle(color: labelColor,
+              fontSize: 14
+          ),
+         errorBorder:OutlineInputBorder(
+             borderRadius: BorderRadius.circular(10),
+           borderSide: BorderSide(
+             width: 2,color: Colors.red
+           )
+         ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                  width: 2,color: borderColor
+              ),
+          ),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                  width: 2,color: borderColor
+              )
+          ),
+        ),
+        dropdownColor: Colors.blueGrey.withOpacity(0.2),
+        style: TextStyle(
             fontSize: 16,
-            color: Colors.red),
-        labelText: label,
-        labelStyle: TextStyle(color: labelColor,
-            fontSize: 18
+            color: Colors.white,
         ),
-       errorBorder:OutlineInputBorder(
-           borderRadius: BorderRadius.circular(10),
-         borderSide: BorderSide(
-           width: 6,color: Colors.red
-         )
-       ),
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(
-                width: 3,color: borderColor
-            ),
-        ),
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(
-                width: 3,color: borderColor
-            )
-        ),
-      ),
-      dropdownColor: Colors.blueGrey.withOpacity(0.7),
-      style: TextStyle(
-          fontSize: 24,
-          color: Colors.white
-      ),
-      iconEnabledColor: Colors.white,
-      isExpanded: true,
-      icon: Icon(Icons.arrow_drop_down),
-      iconSize: 30,
-      menuMaxHeight: 200,
-      focusColor: Colors.limeAccent,
-      value: myDropDownValue,
-      onChanged: (value) {
-        onChange!(value);
-      },
-      items: myDropDownItems);
+        iconEnabledColor: Colors.white,
+        isExpanded: true,
+        icon: Icon(Icons.arrow_drop_down),
+        iconSize: 30,
+        menuMaxHeight: 200,
+        focusColor: Colors.limeAccent,
+        value: myDropDownValue,
+        onChanged: (value) {
+          onChange!(value);
+        },
+        items: myDropDownItems),
+  );
 }
 
 Widget myGestureDetectorWithImage(context, {

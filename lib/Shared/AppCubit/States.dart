@@ -186,3 +186,10 @@ class GetIdDailyFeedErrorState extends FishFarmStates{
   final String error;
   GetIdDailyFeedErrorState(this.error);
 }
+
+class GetAllFeedLoadingState extends FishFarmStates{}
+class GetAllFeedSuccessState extends FishFarmStates{}
+class GetAllFeedErrorState extends FishFarmStates{
+  final String error;
+  GetAllFeedErrorState(this.error);
+}

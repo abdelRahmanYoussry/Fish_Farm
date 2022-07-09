@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fish_farm/Modules/OnBoarding/OnBoarding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,11 +25,20 @@ void main()async{
   Widget widget;
   uid=CashHelper.getData(key: 'uid');
   print(uid);
-  if(uid!=null){
-    widget=HomeScreen();
+  bool? onBoarding=CashHelper.getData(key: 'onBoarding');
+  if(onBoarding!=null){
+    if(uid!=null){
+      widget=HomeScreen();
+
+    }else widget=FishFarmLoginScreen();
   }else{
-    widget=FishFarmLoginScreen();
+    widget=OnBoardingScreen();
   }
+  // if(uid!=null){
+  //   widget=HomeScreen();
+  // }else{
+  //   widget=FishFarmLoginScreen();
+  // }
   runApp(FishFarm(
     startScreen:widget
   ));
@@ -64,7 +74,7 @@ class FishFarm extends StatelessWidget {
                 selectedLabelStyle:TextStyle(
                     fontWeight: FontWeight.bold
                 ) ,
-              selectedItemColor: Colors.black,
+              selectedItemColor: Colors.white,
             selectedIconTheme: IconThemeData(
                size: 35,
             )

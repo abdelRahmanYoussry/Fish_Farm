@@ -37,7 +37,7 @@ class FishFarmRegisterScreen extends StatelessWidget {
           return Scaffold(
             backgroundColor: defaultColor,
               appBar: AppBar(
-                backgroundColor:defaultColor,
+                backgroundColor:defaultColor.withOpacity(0.5),
               ),
               body:  SingleChildScrollView(
                 child: Padding(

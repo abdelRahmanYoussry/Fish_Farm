@@ -4,6 +4,7 @@ import 'package:fish_farm/Shared/AppCubit/Cubit.dart';
 import 'package:fish_farm/Shared/AppCubit/States.dart';
 import 'package:fish_farm/Shared/Componets/components.dart';
 import 'package:fish_farm/Shared/Componets/constans.dart';
+import 'package:fish_farm/Shared/Style/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -22,31 +23,17 @@ var formKey=GlobalKey<FormState>();
       builder: (context,state){
         FishFarmCubit cubit=FishFarmCubit.get(context);
         return Scaffold(
+          backgroundColor: defaultColor,
           extendBodyBehindAppBar: true,
           extendBody: true,
-          appBar: AppBar(
-            elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            centerTitle: true,
-            title: textField(
-              text: 'Monthly Eel Reports'
-          ),),
           body: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  'assets/image/AllTank3.png'
-                ),
-                    fit: BoxFit.fill
-              )
-            ),
             padding:const EdgeInsets.only(left: 20,right: 20,top: 120) ,
             child: Form(
               key: formKey,
               child: Column(
                 children: [
                   myDropDownMenu(
-                      label:'Tank Name',
+                      label:'Select Tank',
                       listName:  FishFarmCubit.get(context).tanksIdList,
                       validator:(value) {
                         if (value == null) {
@@ -108,7 +95,6 @@ var formKey=GlobalKey<FormState>();
                        if(formKey.currentState!.validate())
                        {
                          await  cubit.getTotalSelectedTankData(tankName:tankName! );
-                         // cubit.getMonthlySelectedTankData(tankName: tankName!, selectedMonth: monthController.text);
                        await  cubit.getMonthDataByDays(tankName: tankName!, selectedMonth: monthController.text);
 
                    await  showModalBottomSheet(context: context ,builder:(context)=>

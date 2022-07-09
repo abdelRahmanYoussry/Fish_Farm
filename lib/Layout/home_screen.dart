@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
           condition: profileModel != null,
           fallback: (context) =>
               CircularProgressIndicator(
-                color: defaultColor,
+                color: Colors.yellowAccent,
               ),
           builder: (context) =>
               WillPopScope(
@@ -160,7 +160,7 @@ class HomeScreen extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: mainWidgetHomeScreen(
-                                        imageName: 'assets/image/report.svg',
+                                        imageName: 'assets/image/Reports.svg',
                                         title: 'Reports',
                                         onTap: (){
                                           navigateTo(context, widget: ReportScreen());
@@ -173,7 +173,7 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 Expanded(
                                   child: mainWidgetHomeScreen(
-                                      imageName: 'assets/image/airCreaft.svg',
+                                      imageName: 'assets/image/PlaneView.svg',
                                       title: 'plane View',
                                       onTap: (){
                                     navigateTo(context, widget: PlaneViewScreen());

@@ -3,6 +3,7 @@ import 'package:fish_farm/Modules/Reports/Monthly_Report/Monthly_Reports_Layout.
 import 'package:fish_farm/Modules/Reports/Stock_Report/StockReports.dart';
 import 'package:flutter/material.dart';
 
+import '../../Modules/Reports/Monthly_Report/Monthly_Eel_Report/monthlyEelReport_view/monthlyEelReport_view.dart';
 import '../Style/Icons.dart';
 int currentIndex=0;
 ClassOfAllTanksName?objectOfAllTanksName;
@@ -10,18 +11,19 @@ TankProcessMonthlyItemClass?tankProcessMonthlyReportSelectedUser;
 SuppliesClass?suppliesSelectedUser;
 List <BottomNavigationBarItem> bottomNavBarList=[
   BottomNavigationBarItem(
-    icon: Icon(MyFlutterIcon1.monthly2),
-      label: 'Monthly Reports',
+    icon: Icon(MyFlutterIcon1.monthly2,color: Colors.black),
+      label: 'Monthly Report',
   ),
   BottomNavigationBarItem(
-      icon: Icon(Icons.calendar_today,),label: 'Daily Reports'
+      icon: Icon(Icons.calendar_today_outlined,color: Colors.black,),label: 'Daily Reports'
   ),
   BottomNavigationBarItem(
-      icon: Icon(MyFlutterIcon1.stock),label: 'Stock Report'
+      icon: Icon(MyFlutterIcon1.stock,color: Colors.black,),label: 'Stock Report'
   ),
 ];
 List<Widget> reportsScreens=[
-  MonthlyEelReports(),
+
+  MonthlyReportScreen(),
   DailyReportView(),
   StockReports(),
 ];

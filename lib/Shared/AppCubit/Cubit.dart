@@ -81,7 +81,6 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
         .get()
         .then((value) {
       userModel = FishFarmUserModel.fromJson(value.data()!);
-      print(userModel!.email!+'emailllllllllllllllllllllllllllllllllllllllll');
       emit(GetUserDataSuccessState());
     })
         .catchError((error) {
@@ -337,7 +336,7 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     });
   }
 
-  List<FeedTypeModel>allCreateFeedModelList = [];
+  List<FeedTypeModel>feedTypeList = [];
   List<String>feedIdList = [];
 
   void getAllFeedTypesData() {
@@ -345,17 +344,19 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     FirebaseFirestore.instance.collection('Feed')
         .get()
         .then((value) {
-      allCreateFeedModelList.clear();
+      feedTypeList.clear();
       feedIdList.clear();
       value.docs.forEach((element) {
-        allCreateFeedModelList.add(FeedTypeModel.fromJson(element.data()));
+        feedTypeList.add(FeedTypeModel.fromJson(element.data()));
+        // feedTypeModel= FeedTypeModel.fromJson(element.data());
+        // print(feedTypeModel!.feedName!+'FFFFFFFFFFFFFFFFFFF');
         feedIdList.add(element.id);
       });
       emit(GetAllFeedTypeDataSuccessState());
     })
         .catchError((error) {
       print(error.toString());
-      emit(GetAllFeedTypeDataErrorState(error));
+      emit(GetAllFeedTypeDataErrorState(error.toString()));
     });
   }
 
@@ -716,6 +717,30 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
   });
 
 }
+
+  // void getAllFeed(){
+  //   emit(GetAllFeedLoadingState());
+  //   FeedTypeModel getFeedTypeModel=FeedTypeModel(
+  //     totalPurchasedFeed: feedTypeModel!.totalPurchasedFeed,
+  //     purchasedDate: feedTypeModel!.purchasedDate,
+  //     feedName: feedTypeModel!.feedName,
+  //     remainingFeed: feedTypeModel!.remainingFeed,
+  //   );
+  //   FirebaseFirestore.instance
+  //       .collection('Feed')
+  //       .get()
+  //       .then((value) {
+  //         value.docs.forEach((element) {
+  //           print(element.data().toString());
+  //         });
+  //     emit(GetAllFeedSuccessState());
+  //
+  //   })
+  //       .catchError((error){
+  //     emit(GetAllFeedErrorState(error));
+  //   });
+  //
+  // }
 
   void deleteTank({required String tankName,}){
     emit(DeleteTankLoadingState());
