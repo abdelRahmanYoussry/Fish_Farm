@@ -97,7 +97,6 @@ List<OnBoardingModel> boardList=[
                   {
                     setState(() {
                       isLast=true;
-
                     });
                   }
                   else
@@ -124,7 +123,9 @@ List<OnBoardingModel> boardList=[
             Padding(
               padding: const EdgeInsets.only(top: 30.0,bottom: 10),
               child: defaultButton(
-                  onTap: () {navigateTo(context, widget:  FishFarmLoginScreen()); }
+                  onTap: () {
+                    submit();
+                    navigateTo(context, widget:  FishFarmLoginScreen()); }
                   ,buttonName: 'Get Started',),
             ) ,
             Row(
@@ -134,6 +135,7 @@ List<OnBoardingModel> boardList=[
                   color: Colors.white,fontWeight: FontWeight.bold,fontSize: 16
                 ),),
                 TextButton(onPressed: (){
+                  submit();
                   navigateTo(context, widget:  FishFarmRegisterScreen());
                 }, child: Text(
                   'Register',style: TextStyle(

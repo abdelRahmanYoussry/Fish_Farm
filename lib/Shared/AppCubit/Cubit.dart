@@ -52,15 +52,15 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     emit(TankNameChangedSuccess());
   }
 
-  void functionChangeProcessMonthlyReport(value) {
-    tankProcessMonthlyReportSelectedUser = value;
-    emit(ProcessMonthlyReportChanged());
-  }
+  // void functionChangeProcessMonthlyReport(value) {
+  //   tankProcessMonthlyReportSelectedUser = value;
+  //   emit(ProcessMonthlyReportChanged());
+  // }
 
-  void functionChangeSupplyMonthlyReport(value) {
-    suppliesSelectedUser = value;
-    emit(SupplyMonthlyReportChanged());
-  }
+  // void functionChangeSupplyMonthlyReport(value) {
+  //   suppliesSelectedUser = value;
+  //   emit(SupplyMonthlyReportChanged());
+  // }
 
   void functionShowButtons() {
     if (isEnable == true) {
@@ -147,7 +147,7 @@ class FishFarmCubit extends Cubit<FishFarmStates> {
     .get()
     .then((value) {
       isAdmin=value.data()!['isAdmin'];
-      print(isAdmin);
+      debugPrint(isAdmin.toString());
     })
     .catchError((error){});
   }

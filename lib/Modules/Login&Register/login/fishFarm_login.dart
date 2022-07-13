@@ -33,9 +33,9 @@ class FishFarmLoginScreen extends StatelessWidget {
                 key: 'uid',
                 value:state.uid
             ).then((value) async {
-              print(state.uid+' this is uid');
+              debugPrint(state.uid+' this is uid');
               uid=state.uid;
-              print(state.uid+' this is uid');
+              debugPrint(state.uid+' this is uid');
              await FishFarmCubit.get(context).getUserData();
               navigateAndFinish(context, HomeScreen());
             });
@@ -77,7 +77,7 @@ class FishFarmLoginScreen extends StatelessWidget {
                               textInputFormat:"[a-zA-Z0-9-@.]",
                               control: emailControl,
                               onTap: (){},
-                              onChanged: (value){print(value);},
+                              onChanged: (value){debugPrint(value);},
                               onSubmit: (){},
                               type: TextInputType.emailAddress,
                               validator: (value)
@@ -97,7 +97,7 @@ class FishFarmLoginScreen extends StatelessWidget {
                               control: passwordControl,
                               type: TextInputType.visiblePassword,
                               onTap: (){},
-                              onChanged: (value){print(value);},
+                              onChanged: (value){debugPrint(value);},
                               onSubmit: (value)
                               {
                                 if(formKey.currentState!.validate())

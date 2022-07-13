@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -143,7 +144,7 @@ Widget defaultFormText({
           onPressed: () {
             suffixClicked!();
           },
-          icon: Icon(suffix),
+          icon: Icon(suffix,color: Colors.yellowAccent),
         ) : null,
         enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: borderColor, width: 3),
@@ -460,15 +461,11 @@ Widget mainWidgetHomeScreen({
             //   //     color: Colors.white.withOpacity(0.0))
             // ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(0.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              textField(text: '$title', fontSize: 18,color: Colors.white),
-               SvgPicture.asset(imageName,fit: BoxFit.fitWidth,height: 120,),
-            ],
-          ),
+        child: Column(
+          children: [
+            textField(text: '$title', fontSize: 16,color: Colors.white),
+             SvgPicture.asset(imageName,fit: BoxFit.fitWidth,height: 130,),
+          ],
         ),
       ),
     );
@@ -577,7 +574,7 @@ Widget profileCircleAvatar({
       ),
     );
 
-Widget defaultAppBar({
+ defaultAppBar({
   required BuildContext context,
   Color?backGroundColor,
   Function()? onTap,
@@ -588,6 +585,7 @@ Widget defaultAppBar({
   Widget ?navigateToWidget,
   Widget ?navigateAndFinishWidget,
 })=>AppBar(
+   automaticallyImplyLeading: true,
   elevation:elevation ,
   centerTitle:centerTitle ,
   backgroundColor: backGroundColor,

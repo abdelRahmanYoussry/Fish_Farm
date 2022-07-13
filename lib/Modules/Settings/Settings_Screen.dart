@@ -23,7 +23,7 @@ class EditProfile_Screen extends StatelessWidget {
     return BlocConsumer<FishFarmCubit, FishFarmStates>(
       listener: (context, state) {
          if(state is FishFarmUpdateUserProfileImageSuccessState)
-        showToast(text: 'Your Profile Inage Has Been Changed', state: ToastState.Success);
+        showToast(text: 'Your Profile Image Has Been Changed', state: ToastState.Success);
       },
       builder: (context, state) {
         var editProfileImage=FishFarmCubit.get(context).profileImageFile;

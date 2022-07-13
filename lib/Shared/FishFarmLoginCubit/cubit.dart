@@ -22,7 +22,7 @@ FishFarmUserModel? model;
      password: password).then((value)
  {
 
-   print(value.user!.uid);
+   debugPrint(value.user!.uid);
    emit(FishFarmLoginSuccessState(value.user!.uid));
  }
  ).catchError((error)

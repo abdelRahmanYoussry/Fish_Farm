@@ -164,8 +164,8 @@ class HomeScreen extends StatelessWidget {
                                         title: 'Reports',
                                         onTap: (){
                                           navigateTo(context, widget: ReportScreen());
-                                          FishFarmCubit.get(context).getAllTankData();
-                                          FishFarmCubit.get(context).getAllFeedTypesData();
+                                          // FishFarmCubit.get(context).getAllTankData();
+                                          // FishFarmCubit.get(context).getAllFeedTypesData();
                                         }),
                                   ),
                                   SizedBox(
@@ -173,9 +173,10 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 Expanded(
                                   child: mainWidgetHomeScreen(
-                                      imageName: 'assets/image/PlaneView.svg',
+                                      imageName: 'assets/image/lightHouse.svg',
                                       title: 'plane View',
                                       onTap: (){
+                                        FishFarmCubit.get(context).getAllTankData();
                                     navigateTo(context, widget: PlaneViewScreen());
                                   }),
                                 )
@@ -184,31 +185,38 @@ class HomeScreen extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                  top: 20
+                                  top: 40
                                   , left: 20,right: 20,bottom: 20),
                               child: Row(
                                 children: [
                                   Expanded(
-                                    child: newReportContainer(
-                                        onTap: () {
-                                          FishFarmCubit.get(context).getUserAdmin();
-                                        },
-                                        context: context,
-                                        myIcon: Icon(Icons.compare_arrows),
-                                        subTitle: 'Photos , Videos and more... ',
-                                        title: 'About Us'
-                                    ),
+                                    child: mainWidgetHomeScreen(
+                                        imageName: 'assets/image/aboutUs.svg',
+                                        title: 'About Us',
+                                        onTap: (){
+                                        }),
                                   ),
+                                  // Expanded(
+                                  //   child: newReportContainer(
+                                  //       onTap: () {
+                                  //         FishFarmCubit.get(context).getUserAdmin();
+                                  //       },
+                                  //       context: context,
+                                  //       myIcon: Icon(Icons.compare_arrows),
+                                  //       subTitle: 'Photos , Videos and more... ',
+                                  //       title: 'About Us'
+                                  //   ),
+                                  // ),
                                   SizedBox(
                                       width: 70
                                   ),
                                   Expanded(
-                                    child: newReportContainer(
-                                        title: 'contact us',
-                                        subTitle: 'Your Feedback Is very Important to us ',
-                                        myIcon: Icon(Icons.contact_mail),
-                                        onTap: () {}),
-                                  )
+                                    child: mainWidgetHomeScreen(
+                                        imageName: 'assets/image/contactUs.svg',
+                                        title: 'Contact Us',
+                                        onTap: (){
+                                        }),
+                                  ),
                                 ],
 
 

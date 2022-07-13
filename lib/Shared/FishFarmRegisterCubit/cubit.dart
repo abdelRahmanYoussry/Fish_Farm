@@ -24,8 +24,8 @@ FirebaseAuth.instance.createUserWithEmailAndPassword(
     password: password
 ).then((value) {
   emit(FishFarmRegisterSuccessState());
-  print(value.user!.email);
-  print(value.user!.uid);
+  debugPrint(value.user!.email);
+  debugPrint(value.user!.uid);
   userCreate(
       email: email,
       name: name,
@@ -34,7 +34,7 @@ FirebaseAuth.instance.createUserWithEmailAndPassword(
 }
 ).catchError((error){
   emit(FishFarmRegisterErrorState(error.toString()));
-  print(error.toString()+' Error2222222222222222');
+  debugPrint(error.toString()+' Error2222222222222222');
 });
 
   }

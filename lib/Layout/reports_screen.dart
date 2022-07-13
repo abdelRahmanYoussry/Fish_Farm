@@ -17,13 +17,6 @@ class ReportScreen extends StatelessWidget {
         return Scaffold(
           extendBody: true,
           extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            centerTitle: true,
-           elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            // title: Text('Reports ',
-            //   style:TextStyle(fontSize: 30) ,),
-          ),
           body: reportsScreens[currentIndex],
           bottomNavigationBar:Padding(
             padding: const EdgeInsets.all(10.0),

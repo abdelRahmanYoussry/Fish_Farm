@@ -66,7 +66,7 @@ class FishFarmRegisterScreen extends StatelessWidget {
                               textInputFormat:"[a-zA-Z0-9]",
                               control: nameControl,
                               onTap: (){},
-                              onChanged: (value){print(value);},
+                              onChanged: (value){debugPrint(value);},
                               onSubmit: (){},
                               type: TextInputType.name,
                               validator: (value)
@@ -85,7 +85,7 @@ class FishFarmRegisterScreen extends StatelessWidget {
                               textInputFormat:"[a-zA-Z0-9,@ .]",
                               control: emailControl,
                               onTap: (){},
-                              onChanged: (value){print(value);},
+                              onChanged: (value){debugPrint(value);},
                               onSubmit: (){},
                               type: TextInputType.emailAddress,
                               validator: (value)
@@ -105,7 +105,7 @@ class FishFarmRegisterScreen extends StatelessWidget {
                               control: passwordControl,
                               type: TextInputType.visiblePassword,
                               onTap: (){},
-                              onChanged: (value){print(value);},
+                              onChanged: (value){debugPrint(value);},
                               onSubmit: (value) {},
                               validator: (value)
                               {
@@ -129,7 +129,7 @@ class FishFarmRegisterScreen extends StatelessWidget {
                               textInputFormat:"[0-9]",
                               control: phoneControl,
                               onTap: (){},
-                              onChanged: (value){print(value);},
+                              onChanged: (value){debugPrint(value);},
                               onSubmit: (){},
                               type: TextInputType.phone,
                               validator: (value)
