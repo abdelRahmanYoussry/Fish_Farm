@@ -13,11 +13,16 @@ I had used FireBase As a database and used firebase Login and register And Edit 
 
 64 tanks in the farm that has count of eels and make easily  daily process on them                          
 Functions :
+
 (create)=>(tank&Feedtybe)  
 
-(Add daily)=>(mortality&feed)
+(Add daily)=>(mortality&feed&Stock)
 
  (Edit daily)=>(Mortality&Feed)
+
+
+ (Get)=> All Tanks data & Each tank & Stock (Daily , Monthly)
+        
 
 Get Daily Reports, Monthly reports For Each tank and Remaining of every Feed type 
 
