@@ -3,6 +3,8 @@
 A new Flutter project.
 
 ## Getting Started
+## Firebase
+
 
 Agormar Company
 it's one of biggest Companies in middle east in breeding and export Fish and Eels to Asia Specially Korea.
@@ -10,7 +12,12 @@ it's one of biggest Companies in middle east in breeding and export Fish and Eel
 I had used FireBase As a database and used firebase Login and register And Edit on profile
 
 64 tanks in the farm that has count of eels and make easily  daily process on them                          
-Functions (create)=>(tank&Feedtybe)  || (Add daily)=>(mortality&feed), (Edit daily)=>(Mortality&Feed)
+Functions :
+(create)=>(tank&Feedtybe)  
+
+(Add daily)=>(mortality&feed)
+
+ (Edit daily)=>(Mortality&Feed)
 
 Get Daily Reports, Monthly reports For Each tank and Remaining of every Feed type 
 
