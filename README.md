@@ -9,8 +9,14 @@ https://user-images.githubusercontent.com/92960112/185924809-f436bfbf-36e1-4981-
 
 https://user-images.githubusercontent.com/92960112/185917999-12b2fd13-b219-48ec-be67-0df9f3f6ddef.mp4
 
+#Changing Prfile Pic
 
 
+https://user-images.githubusercontent.com/92960112/186037713-917f0326-9cf0-4ffe-ba79-29676ecec5e5.mp4
+
+#Internet Checker 
+
+https://user-images.githubusercontent.com/92960112/186037689-4666e1b8-f5ce-44b7-877c-15b8566dbd92.mp4
 
 
 A new Flutter project.
