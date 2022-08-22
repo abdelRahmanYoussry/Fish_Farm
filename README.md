@@ -1,11 +1,15 @@
 # fish_farm
 the App still under Development
 
+#Onboarding,Login,Reg Features 
 
+https://user-images.githubusercontent.com/92960112/185924809-f436bfbf-36e1-4981-a77f-c0ae9e71ff57.mp4
 
 #Create , Delete , Add feed , Add Mortality Features 
 
 https://user-images.githubusercontent.com/92960112/185917999-12b2fd13-b219-48ec-be67-0df9f3f6ddef.mp4
+
+
 
 
 
